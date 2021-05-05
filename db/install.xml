@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/satool/db" VERSION="20210505" COMMENT="XMLDB file for Moodle local/satool"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="local_satool_courses" COMMENT="Course table for the SA-Tool.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="45" NOTNULL="false" SEQUENCE="false" COMMENT="Name of the course."/>
+        <FIELD NAME="maildate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Date for the Info Mail."/>
+        <FIELD NAME="submitdate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Submission date for the project definitions"/>
+        <FIELD NAME="deadline" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Deadline for the project submissions."/>
+        <FIELD NAME="mailtext" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Text for the Info Mail."/>
+        <FIELD NAME="rubric" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Rubric to grade projects. This is stored in JSON-Format."/>
+        <FIELD NAME="coursefiles" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The filemanager draft id for course files."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_satool_teachers" COMMENT="Teachers table for the SA-Tool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="submitrequire" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="A list of the required objects for project submissions. This is in JSON-Format."/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The userid of the teacher. This is used to display user information."/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The course id of the teacher."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" COMMENT="The foreign key for the user id."/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="local_satool_courses" REFFIELDS="id" COMMENT="The foreign key for the course id."/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_satool_projects" COMMENT="Projects table for the SA-tool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="definition" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The definition of the project. This is stored in JSON-Format."/>
+        <FIELD NAME="submission" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The submission of the project. This is stored in JSON-Format."/>
+        <FIELD NAME="grade" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The grade of the test with rubric data. This is stored in JSON-Format"/>
+        <FIELD NAME="teacherid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the supervising teacher."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="teacherid" TYPE="foreign" FIELDS="teacherid" REFTABLE="local_satool_teachers" REFFIELDS="id" COMMENT="The foreign key for the teacher id."/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_satool_students" COMMENT="Students table for the SA-Tool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The user id of the student. This is used to get account data for displaying."/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the course which the student is assigned to."/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the student's project."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" COMMENT="The foreign key for the user id."/>
+        <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="local_satool_courses" REFFIELDS="id" COMMENT="The foreign key for the course id."/>
+        <KEY NAME="projectid" TYPE="foreign" FIELDS="projectid" REFTABLE="local_satool_projects" REFFIELDS="id" COMMENT="The foreign key for the project id."/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_satool_documents" COMMENT="Documents table for the SA-Tool.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="managerid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id given by the filemanager used to store the document."/>
+        <FIELD NAME="path" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The file path of the uploaded document."/>
+        <FIELD NAME="by" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the user who uploaded the file."/>
+        <FIELD NAME="for" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the user who the file was uploaded for."/>
+        <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The type of the file which indicates from where it was uploaded."/>
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="The status of the file. Deactivates if the file gets replaced with a new one."/>
+        <FIELD NAME="projectid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the project the document was uploaded for."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="projectid" TYPE="foreign" FIELDS="projectid" REFTABLE="local_satool_projects" REFFIELDS="id" COMMENT="The foreign key for the project id."/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

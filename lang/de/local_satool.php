@@ -31,3 +31,12 @@ $string['title'] = 'SA-Tool';
 $string['infomailtask'] = 'Info-Mail an SA-Kursschüler senden';
 $string['submitdatetask'] = 'Warn-Email an SA-Kursschüler für Projektdefinitionsabgabe senden';
 $string['deadlinetask'] = 'Warn-Email an SA-Kursschüler für SA-Abgabe senden';
+
+// Course creation form translations.
+$string['coursename'] = 'Kursname';
+$string['coursenameplaceholder'] = 'z.B. SA 2020/21';
+$string['coursemaildate'] = 'Info-Mail-Termin';
+$string['coursesubmitdate'] = 'Eingabetermin';
+$string['coursedeadline'] = 'Abgabetermin';
+$string['coursemailtext'] = 'Info-Mail Text';
+$string['coursefiles'] = 'Kursdateien';

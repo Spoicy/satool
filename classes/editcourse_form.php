@@ -48,6 +48,14 @@ class local_satool_editcourse_form extends moodleform {
             throw new coding_exception('invalid custom data for course_edit_form');
         }
 
+        $year = date('Y');
+
+        $datetimeoptions = array(
+            'startyear' => $year - 2,
+            'stopyear' => $year + 2,
+            'step' => 5
+        );
+
         $course = $this->_customdata['course'];
 
         // Accessibility: "Required" is bad legend text.
@@ -60,8 +68,28 @@ class local_satool_editcourse_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', $strrequired, 'required', null, 'client');
 
+        $mform->addElement('date_time_selector', 'maildate', get_string('coursemaildate', 'local_satool'), $datetimeoptions);
+        $mform->addRule('maildate', $strrequired, 'required', null, 'client');
+
+        $mform->addElement('date_time_selector', 'submitdate', get_string('coursesubmitdate', 'local_satool'), $datetimeoptions);
+        $mform->addRule('submitdate', $strrequired, 'required', null, 'client');
+
+        $mform->addElement('date_time_selector', 'deadline', get_string('coursedeadline', 'local_satool'), $datetimeoptions);
+        $mform->addRule('deadline', $strrequired, 'required', null, 'client');
+
+        $mform->addElement('textarea', 'mailtext', get_string('coursemailtext', 'local_satool'),
+            'wrap="virtual" rows="14" cols="65"');
+        $mform->addRule('mailtext', $strrequired, 'required', null, 'client');
+
+        $mform->addElement('filemanager', 'coursefiles_filemanager', get_string('coursefiles', 'local_satool'), null, [
+            'maxfiles' => 5
+        ]);
+        $mform->setType('coursefiles_filemanager', PARAM_FILE);
+
+        // Add buttons.
         $this->add_action_buttons();
 
+        // Fill form with data if course exists.
         $this->set_data($course);
     }
 }
