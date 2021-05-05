@@ -152,4 +152,19 @@ function xmldb_local_satool_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021050502, 'local', 'satool');
     }
 
+    if ($oldversion < 2021050503) {
+
+        // Define field status to be added to local_satool_students.
+        $table = new xmldb_table('local_satool_students');
+        $field = new xmldb_field('status', XMLDB_TYPE_INTEGER, '1', null, null, null, null, 'projectid');
+
+        // Conditionally launch add field status.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021050503, 'local', 'satool');
+    }
+
 }

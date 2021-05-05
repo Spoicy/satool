@@ -51,6 +51,7 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The user id of the student. This is used to get account data for displaying."/>
         <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the course which the student is assigned to."/>
         <FIELD NAME="projectid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the student's project."/>
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Status of the student. This is to substitute for user deletion."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

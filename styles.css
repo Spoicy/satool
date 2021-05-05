@@ -1,0 +1,27 @@
+.teachertable #assignedcell,
+.teachertable #unassignedcell,
+.studenttable #assignedcell,
+.studenttable #unassignedcell {
+    width: 42%;
+}
+
+.teachertable #buttonscell,
+.studenttable #buttonscell {
+    width: 16%;
+}
+
+.teachertable td,
+.studenttable td {
+    vertical-align: top;
+    padding: .2em .3em;
+}
+
+.teachertable tr,
+.studenttable tr {
+    background-color: rgba(0,0,0,.05);
+}
+
+.teachertable p,
+.studenttable p {
+    margin: .2em 0;
+}

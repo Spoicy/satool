@@ -34,6 +34,10 @@ require_capability('local/satool:editcourse', context_system::instance());
 
 // Get params.
 $id = optional_param('id', -1, PARAM_INT);
+$unassignedteacherids = optional_param_array('teacherunassignedselect', [], PARAM_INT);
+$assignedteacherids = optional_param_array('teacherassignedselect', [], PARAM_INT);
+$unassignedstudentids = optional_param_array('studentunassignedselect', [], PARAM_INT);
+$assignedstudentids = optional_param_array('studentassignedselect', [], PARAM_INT);
 
 // Set Page variables.
 $PAGE->set_url(new moodle_url('/local/satool/editcourse.php', ['id' => $id]));
@@ -59,6 +63,51 @@ if ($id == -1) {
     $course = $DB->get_record('local_satool_courses', ['id' => $id]);
     if (!$course) {
         print_error('accessdenied', 'admin');
+    }
+}
+
+// Add teacher to course.
+if (optional_param('teacheradd', false, PARAM_BOOL) && count($unassignedteacherids) && confirm_sesskey()) {
+    foreach ($unassignedteacherids as $teacherid) {
+        $teacher = new stdClass();
+        $teacher->courseid = $course->id;
+        $teacher->userid = $teacherid;
+        $DB->insert_record('local_satool_teachers', $teacher);
+    }
+}
+
+// Remove teacher from course.
+if (optional_param('teacherremove', false, PARAM_BOOL) && count($assignedteacherids) && confirm_sesskey()) {
+    foreach ($assignedteacherids as $teacherid) {
+        $DB->delete_records('local_satool_teachers', ['userid' => $teacherid]);
+    }
+}
+
+// Add student to course.
+if (optional_param('studentadd', false, PARAM_BOOL) && count($unassignedstudentids) && confirm_sesskey()) {
+    foreach ($unassignedstudentids as $studentid) {
+        $student = $DB->get_record('local_satool_students',
+            ['courseid' => $course->id, 'userid' => $studentid]);
+        if ($student) {
+            $student->status = 1;
+            $DB->update_record('local_satool_students', $student);
+        } else {
+            $student = new stdClass();
+            $student->courseid = $course->id;
+            $student->userid = $studentid;
+            $student->status = 1;
+            $DB->insert_record('local_satool_students', $student);
+        }
+    }
+}
+
+// Remove student from course.
+if (optional_param('studentremove', false, PARAM_BOOL) && count($assignedstudentids) && confirm_sesskey()) {
+    foreach ($assignedstudentids as $studentid) {
+        $student = $DB->get_record('local_satool_students',
+            ['courseid' => $course->id, 'userid' => $studentid]);
+        $student->status = 0;
+        $DB->update_record('local_satool_students', $student);
     }
 }
 
@@ -92,9 +141,17 @@ if ($courseform->is_cancelled()) {
     redirect($returnurl);
 }
 
-if ($course->id !== -1) {
-    
+// Load both course forms if class exists in database.
+if ($course->id != -1) {
+    $teacherform = local_satool_load_courseteacherform($course);
+    $studentform = local_satool_load_coursestudentform($course);
+    $formtext = $teacherform . '<br>' . $studentform;
+} else {
+    $formtext = html_writer::tag('p', get_string('createcoursetounlock', 'local_satool'));
 }
+
+$html = html_writer::tag('form', $formtext,
+    ['action' => new moodle_url($PAGE->url, ['sesskey' => sesskey()]), 'method' => 'post', 'class' => 'courseform']);
 
 // Output the page.
 echo $OUTPUT->header();

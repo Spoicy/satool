@@ -110,3 +110,369 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
     \core\session\manager::write_close();
     send_stored_file($file, null, 0, $forcedownload, $options);
 }
+
+/**
+ * Load the SA-Tool teacher form
+ *
+ * @param stdClass $course satool course object
+ */
+function local_satool_load_courseteacherform($course) {
+    global $DB, $OUTPUT;
+
+    $html = '';
+
+    // Fetch loading animation.
+    $loading = $OUTPUT->image_url("i/loading", "core");
+
+    $inselect = 'SELECT userid FROM {local_satool_teachers} WHERE courseid = ' . $course->id;
+
+    $assigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id IN (' . $inselect . ')');
+    $unassigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id NOT IN (' . $inselect . ')');
+
+    $assignedselect = $unassignedselect = '';
+
+    foreach ($assigned as $teacher) {
+        $assignedselect .= html_writer::tag('option', fullname($teacher) . " (" . $teacher->username . ")",
+            ['value' => $teacher->id]);
+    }
+
+    foreach ($unassigned as $teacher) {
+        $unassignedselect .= html_writer::tag('option', fullname($teacher) . " (" . $teacher->username . ")",
+            ['value' => $teacher->id]);
+    }
+
+    $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
+        ['label' => get_string('teacherassignedcount', 'local_satool', count($assigned))]);
+    $unassignedoptgroup = html_writer::tag('optgroup', $unassignedselect,
+        ['label' => get_string('unassignedcount', 'local_satool', count($unassigned))]);
+
+    // Create table cells for the selects and buttons.
+    $assignedtd = html_writer::tag('td',
+        html_writer::tag('p',
+            html_writer::label(get_string('teacherassigned', 'local_satool'), 'teacherassignedselect', true,
+                ['class' => 'font-weight-bold'])
+        ) .
+        html_writer::div(
+            html_writer::tag('select', $assignedoptgroup, [
+                'multiple' => 'multiple', 'class' => 'form-control',
+                'name' => 'teacherassignedselect[]', 'id' => 'teacherassignedselect', 'size' => '20',
+                'onchange' => 'enableTeacherAssigned()'])
+        ) .
+        html_writer::div(
+            html_writer::label(get_string('search', 'local_satool'), 'teacherassignedselect_searchtext',
+                true, ['class' => 'mr-1']) .
+            html_writer::tag('input', '', ['type' => 'text', 'size' => '15', 'class' => 'form-control',
+                'id' => 'teacherassignedselect_searchtext',
+                'name' => 'teacherassignedselect_searchtext', 'oninput' => 'searchTeacherAssigned()']) .
+            html_writer::tag('input', '', ['type' => 'button', 'value' => get_string('clear', 'local_satool'),
+                'id' => 'teacherassignedselect_cleartext', 'name' => 'teacherassignedselect_cleartext',
+                'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearTeacherAssigned()']),
+        'form-inline classsearch my-1'), ['id' => 'assignedcell']
+    );
+    $buttonstd = html_writer::tag('td',
+        html_writer::div(
+            html_writer::tag('input', '', [
+                'id' => 'teacheradd', 'name' => 'teacheradd', 'type' => 'submit',
+                'value' => get_string('add', 'local_satool'), 'class' => 'btn btn-secondary', 'disabled' => ''
+                ]), '', ['id' => 'addcontrols']
+        ) .
+        html_writer::div(
+            html_writer::tag('input', '', [
+                'id' => 'teacherremove', 'name' => 'teacherremove', 'type' => 'submit',
+                'value' => get_string('remove', 'local_satool'), 'class' => 'btn btn-secondary', 'disabled' => ''
+                ]), '', ['id' => 'removecontrols']
+        ), ['id' => 'buttonscell']
+    );
+    $notassignedtd = html_writer::tag('td',
+        html_writer::tag('p',
+            html_writer::label(get_string('unassigned', 'local_satool'), 'teacherunassignedselect', true,
+                ['class' => 'font-weight-bold'])
+        ) .
+        html_writer::div(
+            html_writer::tag('select', $unassignedoptgroup, [
+                'multiple' => 'multiple', 'class' => 'form-control',
+                'name' => 'teacherunassignedselect[]', 'id' => 'teacherunassignedselect', 'size' => '20',
+                'onChange' => 'enableTeacherUnassigned()'])
+        ) .
+        html_writer::div(
+            html_writer::label(get_string('search', 'local_satool'), 'teacherunassignedselect_searchtext',
+                true, ['class' => 'mr-1']) .
+            html_writer::tag('input', '', ['type' => 'text', 'size' => '15', 'class' => 'form-control',
+                'id' => 'teacherunassignedselect_searchtext', 'name' => 'teacherunassignedselect_searchtext',
+                'oninput' => 'searchTeacherUnassigned()']) .
+            html_writer::tag('input', '', ['type' => 'button', 'value' => get_string('clear', 'local_satool'),
+                'id' => 'teacherunassignedselect_cleartext', 'name' => 'teacherunassignedselect_cleartext',
+                'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearTeacherUnassigned()']),
+        'form-inline classsearch my-1'), ['id' => 'unassignedcell']
+    );
+
+    // Prepare HTML for output with table and search scripts.
+    $html = html_writer::tag('table',
+        html_writer::tag('tbody', html_writer::tag('tr', $assignedtd . $buttonstd . $notassignedtd)),
+            ['class' => 'teachertable w-100']) .
+        html_writer::script('
+            var timer;
+            function enableTeacherAssigned() {
+                $("#teacherremove").prop("disabled", false);
+            }
+            function enableTeacherUnassigned() {
+                $("#teacheradd").prop("disabled", false);
+            }
+            function searchTeacherAssigned() {
+                $("#teacherassignedselect").css("background", "url(' . $loading . ') center center no-repeat");
+                var variables = {
+                    "pagemode": 0,
+                    "search": $("#teacherassignedselect_searchtext").val(),
+                    "courseid": "' . $course->id . '",
+                    "mode": 0
+                }
+                var data = JSON.stringify(variables);
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    $.ajax({
+                        url: "../ajax/search.php",
+                        type: "POST",
+                        data: {
+                            "data": data
+                        },
+                        success: function(data) {
+                            $("select#teacherassignedselect").html(data);
+                            $("#teacherassignedselect").css("background", "");
+                            $("#remove").prop("disabled", true);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $("#teacherassignedselect").css("background", "");
+                            $("#remove").prop("disabled", true);
+                        }
+                    })
+                }, 500);
+            }
+            function searchTeacherUnassigned() {
+                $("#teacherunassignedselect").css("background", "url(' . $loading . ') center center no-repeat");
+                var variables = {
+                    "pagemode": 0,
+                    "search": $("#teacherunassignedselect_searchtext").val(),
+                    "courseid": "' . $course->id . '",
+                    "mode": 1
+                }
+                var data = JSON.stringify(variables);
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    $.ajax({
+                        url: "../ajax/search.php",
+                        type: "POST",
+                        data: {
+                            "data": data
+                        },
+                        success: function(data) {
+                            $("select#teacherunassignedselect").html(data);
+                            $("#teacherunassignedselect").css("background", "");
+                            $("#add").prop("disabled", true);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $("#teacherunassignedselect").css("background", "");
+                            $("#add").prop("disabled", true);
+                        }
+                    })
+                }, 500);
+            }
+            function clearTeacherAssigned() {
+                if ($("#teacherassignedselect_searchtext").val()) {
+                    $("#teacherassignedselect_searchtext").val("");
+                    searchTeacherAssigned();
+                }
+            }
+            function clearTeacherUnassigned() {
+                if ($("#teacherunassignedselect_searchtext").val()) {
+                    $("#teacherunassignedselect_searchtext").val("");
+                    searchTeacherUnassigned();
+                }
+            }
+        ');
+
+    return $html;
+
+}
+
+/**
+ * Load the SA-Tool student form
+ *
+ * @param stdClass $course satool course object
+ */
+function local_satool_load_coursestudentform($course) {
+    global $DB, $OUTPUT;
+
+    $html = '';
+
+    // Fetch loading animation.
+    $loading = $OUTPUT->image_url("i/loading", "core");
+
+    $inselect = 'SELECT lss.userid FROM {local_satool_students} lss WHERE lss.courseid = ' . $course->id . ' AND lss.status = 1';
+
+    $assigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id IN (' . $inselect . ')');
+    $unassigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id NOT IN (' . $inselect . ')');
+
+    $assignedselect = $unassignedselect = '';
+
+    foreach ($assigned as $student) {
+        $assignedselect .= html_writer::tag('option', fullname($student) . " (" . $student->username . ")",
+            ['value' => $student->id]);
+    }
+
+    foreach ($unassigned as $student) {
+        $unassignedselect .= html_writer::tag('option', fullname($student) . " (" . $student->username . ")",
+            ['value' => $student->id]);
+    }
+
+    $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
+        ['label' => get_string('studentassignedcount', 'local_satool', count($assigned))]);
+    $unassignedoptgroup = html_writer::tag('optgroup', $unassignedselect,
+        ['label' => get_string('unassignedcount', 'local_satool', count($unassigned))]);
+
+    // Create table cells for the selects and buttons.
+    $assignedtd = html_writer::tag('td',
+        html_writer::tag('p',
+            html_writer::label(get_string('studentassigned', 'local_satool'), 'studentassignedselect', true,
+                ['class' => 'font-weight-bold'])
+        ) .
+        html_writer::div(
+            html_writer::tag('select', $assignedoptgroup, [
+                'multiple' => 'multiple', 'class' => 'form-control',
+                'name' => 'studentassignedselect[]', 'id' => 'studentassignedselect', 'size' => '20',
+                'onchange' => 'enableStudentAssigned()'])
+        ) .
+        html_writer::div(
+            html_writer::label(get_string('search', 'local_satool'), 'studentassignedselect_searchtext',
+                true, ['class' => 'mr-1']) .
+            html_writer::tag('input', '', ['type' => 'text', 'size' => '15', 'class' => 'form-control',
+                'id' => 'studentassignedselect_searchtext',
+                'name' => 'studentassignedselect_searchtext', 'oninput' => 'searchStudentAssigned()']) .
+            html_writer::tag('input', '', ['type' => 'button', 'value' => get_string('clear', 'local_satool'),
+                'id' => 'studentassignedselect_cleartext', 'name' => 'studentassignedselect_cleartext',
+                'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearStudentAssigned()']),
+        'form-inline classsearch my-1'), ['id' => 'assignedcell']
+    );
+    $buttonstd = html_writer::tag('td',
+        html_writer::div(
+            html_writer::tag('input', '', [
+                'id' => 'studentadd', 'name' => 'studentadd', 'type' => 'submit',
+                'value' => get_string('add', 'local_satool'), 'class' => 'btn btn-secondary', 'disabled' => ''
+                ]), '', ['id' => 'addcontrols']
+        ) .
+        html_writer::div(
+            html_writer::tag('input', '', [
+                'id' => 'studentremove', 'name' => 'studentremove', 'type' => 'submit',
+                'value' => get_string('remove', 'local_satool'), 'class' => 'btn btn-secondary', 'disabled' => ''
+                ]), '', ['id' => 'removecontrols']
+        ), ['id' => 'buttonscell']
+    );
+    $notassignedtd = html_writer::tag('td',
+        html_writer::tag('p',
+            html_writer::label(get_string('unassigned', 'local_satool'), 'studentunassignedselect', true,
+                ['class' => 'font-weight-bold'])
+        ) .
+        html_writer::div(
+            html_writer::tag('select', $unassignedoptgroup, [
+                'multiple' => 'multiple', 'class' => 'form-control',
+                'name' => 'studentunassignedselect[]', 'id' => 'studentunassignedselect', 'size' => '20',
+                'onChange' => 'enableStudentUnassigned()'])
+        ) .
+        html_writer::div(
+            html_writer::label(get_string('search', 'local_satool'), 'studentunassignedselect_searchtext',
+                true, ['class' => 'mr-1']) .
+            html_writer::tag('input', '', ['type' => 'text', 'size' => '15', 'class' => 'form-control',
+                'id' => 'studentunassignedselect_searchtext', 'name' => 'studentunassignedselect_searchtext',
+                'oninput' => 'searchStudentUnassigned()']) .
+            html_writer::tag('input', '', ['type' => 'button', 'value' => get_string('clear', 'local_satool'),
+                'id' => 'studentunassignedselect_cleartext', 'name' => 'studentunassignedselect_cleartext',
+                'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearStudentUnassigned()']),
+        'form-inline classsearch my-1'), ['id' => 'unassignedcell']
+    );
+
+    // Prepare HTML for output with table and search scripts.
+    $html = html_writer::tag('table',
+        html_writer::tag('tbody', html_writer::tag('tr', $assignedtd . $buttonstd . $notassignedtd)),
+            ['class' => 'studenttable w-100']) .
+        html_writer::script('
+            var timer;
+            function enableStudentAssigned() {
+                $("#studentremove").prop("disabled", false);
+            }
+            function enableStudentUnassigned() {
+                $("#studentadd").prop("disabled", false);
+            }
+            function searchStudentAssigned() {
+                $("#studentassignedselect").css("background", "url(' . $loading . ') center center no-repeat");
+                var variables = {
+                    "pagemode": 1,
+                    "search": $("#studentassignedselect_searchtext").val(),
+                    "courseid": "' . $course->id . '",
+                    "mode": 0
+                }
+                var data = JSON.stringify(variables);
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    $.ajax({
+                        url: "../ajax/search.php",
+                        type: "POST",
+                        data: {
+                            "data": data
+                        },
+                        success: function(data) {
+                            $("select#studentassignedselect").html(data);
+                            $("#studentassignedselect").css("background", "");
+                            $("#remove").prop("disabled", true);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $("#studentassignedselect").css("background", "");
+                            $("#remove").prop("disabled", true);
+                        }
+                    })
+                }, 500);
+            }
+            function searchStudentUnassigned() {
+                $("#studentunassignedselect").css("background", "url(' . $loading . ') center center no-repeat");
+                var variables = {
+                    "pagemode": 1,
+                    "search": $("#studentunassignedselect_searchtext").val(),
+                    "courseid": "' . $course->id . '",
+                    "mode": 1
+                }
+                var data = JSON.stringify(variables);
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    $.ajax({
+                        url: "../ajax/search.php",
+                        type: "POST",
+                        data: {
+                            "data": data
+                        },
+                        success: function(data) {
+                            $("select#studentunassignedselect").html(data);
+                            $("#studentunassignedselect").css("background", "");
+                            $("#add").prop("disabled", true);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $("#studentunassignedselect").css("background", "");
+                            $("#add").prop("disabled", true);
+                        }
+                    })
+                }, 500);
+            }
+            function clearStudentAssigned() {
+                if ($("#studentassignedselect_searchtext").val()) {
+                    $("#studentassignedselect_searchtext").val("");
+                    searchStudentAssigned();
+                }
+            }
+            function clearStudentUnassigned() {
+                if ($("#studentunassignedselect_searchtext").val()) {
+                    $("#studentunassignedselect_searchtext").val("");
+                    searchStudentUnassigned();
+                }
+            }
+        ');
+
+    return $html;
+
+}
