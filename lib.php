@@ -34,9 +34,26 @@ function local_satool_create_course($course) {
     $manageroptions = array(
         'maxfiles' => 5
     );
+    $dt = new DateTime();
 
     if (!is_object($course)) {
         $course = (object) $course;
+    }
+
+    $dates = ['\local_satool\task\infomail_task' => $course->maildate,
+        '\local_satool\task\submitdate_task' => $course->submitdate,
+        '\local_satool\task\deadline_task' => $course->deadline];
+    
+    foreach ($dates as $key => $date) {
+        $dt->setTimestamp($date);
+        $datetime = explode(' ', $dt->format('j n Y G i'));
+        $task = \core\task\manager::get_scheduled_task($key);
+        $task->set_minute($datetime[4]);
+        $task->set_hour($datetime[3]);
+        $task->set_month($datetime[1]);
+        $task->set_day($datetime[0]);
+        $task->set_disabled(0);
+        \core\task\manager::configure_scheduled_task($task);
     }
 
     $course->name = trim($course->name);
@@ -57,13 +74,28 @@ function local_satool_update_course($course) {
     global $DB, $CFG;
 
     $context = context_system::instance();
-
     $manageroptions = array(
         'maxfiles' => 5
     );
+    $dt = new DateTime();
 
     if (!is_object($course)) {
         $course = (object) $course;
+    }
+
+    $dates = ['\local_satool\task\infomail_task' => $course->maildate,
+        '\local_satool\task\submitdate_task' => $course->submitdate,
+        '\local_satool\task\deadline_task' => $course->deadline];
+    
+    foreach ($dates as $key => $date) {
+        $dt->setTimestamp($date);
+        $datetime = explode(' ', $dt->format('j n Y G i'));
+        $task = \core\task\manager::get_scheduled_task($key);
+        $task->set_minute($datetime[4]);
+        $task->set_hour($datetime[3]);
+        $task->set_month($datetime[1]);
+        $task->set_day($datetime[0]);
+        \core\task\manager::configure_scheduled_task($task);
     }
 
     $course->name = trim($course->name);
