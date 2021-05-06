@@ -51,3 +51,11 @@ $string['clear'] = 'Löschen';
 $string['add'] = 'Einschreiben';
 $string['remove'] = 'Entfernen';
 $string['createcoursetounlock'] = 'Erstellen Sie einen neuen Kurs um Schüler und Lehrpersonen einschreiben zu können.';
+$string['teacherassignedcountmatching'] = 'Eingeschriebene Lehrpersonen mit \'{$a->search}\' ({$a->count})';
+$string['studentassignedcountmatching'] = 'Eingeschriebene Schüler/innen mit \'{$a->search}\' ({$a->count})';
+$string['unassignedcountmatching'] = 'Nicht eingeschriebene Benutzer mit \'{$a->search}\' ({$a->count})';
+
+// Course mail translations. These will not be translated into english.
+$string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
+$string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
+$string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';

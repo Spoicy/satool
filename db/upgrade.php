@@ -167,4 +167,10 @@ function xmldb_local_satool_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021050503, 'local', 'satool');
     }
 
+    if ($oldversion < 2021050600) {
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021050600, 'local', 'satool');
+    }
+
 }

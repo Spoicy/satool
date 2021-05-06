@@ -39,8 +39,14 @@ class infomail_task extends \core\task\scheduled_task {
      * Run task.
      */
     public function execute() {
-        global $CFG;
-        echo "Placeholder code";
+        global $CFG, $DB, $SITE;
+        $course = array_reverse($DB->get_records('local_satool_courses'))[0];
+        $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
+        $i = 5;
+        foreach ($students as $student) {
+            $user = $DB->get_record('user', ['id' => $student->userid]);
+            email_to_user($user, $SITE->shortname, "Info-Mail $course->name", $course->mailtext);
+        }
     }
 
 }

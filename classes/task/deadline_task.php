@@ -24,6 +24,8 @@
 
 namespace local_satool\task;
 
+use DateTime;
+
 class deadline_task extends \core\task\scheduled_task {
 
     /**
@@ -39,8 +41,20 @@ class deadline_task extends \core\task\scheduled_task {
      * Run task.
      */
     public function execute() {
-        global $CFG;
-        echo "Placeholder code";
+        global $CFG, $DB, $SITE;
+        $course = array_reverse($DB->get_records('local_satool_courses'))[0];
+        $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
+        foreach ($students as $student) {
+            $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
+            if ($project && $project->submission == null) {
+                $user = $DB->get_record('user', ['id' => $student->userid]);
+                $dt = new DateTime();
+                $dt->setTimestamp($course->submitdate);
+                $datetime = $dt->format('d.m.Y H:i');
+                email_to_user($user, $SITE->shortname, "Warn-Email Abgabetermin $course->name",
+                    get_string('warningdeadline', 'local_satool', $datetime));
+            }
+        }
     }
 
 }
