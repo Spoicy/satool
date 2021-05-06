@@ -124,23 +124,21 @@ function local_satool_load_courseteacherform($course) {
     // Fetch loading animation.
     $loading = $OUTPUT->image_url("i/loading", "core");
 
+    // Get teachers from database.
     $inselect = 'SELECT userid FROM {local_satool_teachers} WHERE courseid = ' . $course->id;
-
     $assigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id IN (' . $inselect . ')');
     $unassigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id NOT IN (' . $inselect . ')');
 
+    // Prepare select options and optgroups with teacher data.
     $assignedselect = $unassignedselect = '';
-
     foreach ($assigned as $teacher) {
         $assignedselect .= html_writer::tag('option', fullname($teacher) . " (" . $teacher->username . ")",
             ['value' => $teacher->id]);
     }
-
     foreach ($unassigned as $teacher) {
         $unassignedselect .= html_writer::tag('option', fullname($teacher) . " (" . $teacher->username . ")",
             ['value' => $teacher->id]);
     }
-
     $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
         ['label' => get_string('teacherassignedcount', 'local_satool', count($assigned))]);
     $unassignedoptgroup = html_writer::tag('optgroup', $unassignedselect,
@@ -230,7 +228,7 @@ function local_satool_load_courseteacherform($course) {
                 clearTimeout(timer);
                 timer = setTimeout(function() {
                     $.ajax({
-                        url: "../ajax/search.php",
+                        url: "ajax/search.php",
                         type: "POST",
                         data: {
                             "data": data
@@ -259,7 +257,7 @@ function local_satool_load_courseteacherform($course) {
                 clearTimeout(timer);
                 timer = setTimeout(function() {
                     $.ajax({
-                        url: "../ajax/search.php",
+                        url: "ajax/search.php",
                         type: "POST",
                         data: {
                             "data": data
@@ -291,7 +289,6 @@ function local_satool_load_courseteacherform($course) {
         ');
 
     return $html;
-
 }
 
 /**
@@ -307,23 +304,21 @@ function local_satool_load_coursestudentform($course) {
     // Fetch loading animation.
     $loading = $OUTPUT->image_url("i/loading", "core");
 
+    // Get students from database.
     $inselect = 'SELECT lss.userid FROM {local_satool_students} lss WHERE lss.courseid = ' . $course->id . ' AND lss.status = 1';
-
     $assigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id IN (' . $inselect . ')');
     $unassigned = $DB->get_records_sql('SELECT * FROM {user} u WHERE u.id NOT IN (' . $inselect . ')');
 
+    // Prepare select options and optgroups with student data.
     $assignedselect = $unassignedselect = '';
-
     foreach ($assigned as $student) {
         $assignedselect .= html_writer::tag('option', fullname($student) . " (" . $student->username . ")",
             ['value' => $student->id]);
     }
-
     foreach ($unassigned as $student) {
         $unassignedselect .= html_writer::tag('option', fullname($student) . " (" . $student->username . ")",
             ['value' => $student->id]);
     }
-
     $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
         ['label' => get_string('studentassignedcount', 'local_satool', count($assigned))]);
     $unassignedoptgroup = html_writer::tag('optgroup', $unassignedselect,
@@ -413,7 +408,7 @@ function local_satool_load_coursestudentform($course) {
                 clearTimeout(timer);
                 timer = setTimeout(function() {
                     $.ajax({
-                        url: "../ajax/search.php",
+                        url: "ajax/search.php",
                         type: "POST",
                         data: {
                             "data": data
@@ -442,7 +437,7 @@ function local_satool_load_coursestudentform($course) {
                 clearTimeout(timer);
                 timer = setTimeout(function() {
                     $.ajax({
-                        url: "../ajax/search.php",
+                        url: "ajax/search.php",
                         type: "POST",
                         data: {
                             "data": data
@@ -474,5 +469,4 @@ function local_satool_load_coursestudentform($course) {
         ');
 
     return $html;
-
 }

@@ -50,3 +50,7 @@ $string['search'] = 'Search';
 $string['clear'] = 'Clear';
 $string['add'] = 'Add';
 $string['remove'] = 'Remove';
+$string['createcoursetounlock'] = 'Create a new course to unlock adding students and teachers.';
+$string['teacherassignedcountmatching'] = 'Assigned teachers matching \'{$a->search}\' ({$a->count})';
+$string['studentassignedcountmatching'] = 'Assigned students matching \'{$a->search}\' ({$a->count})';
+$string['unassignedcountmatching'] = 'Unassigned users matching \'{$a->search}\' ({$a->count})';

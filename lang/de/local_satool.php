@@ -50,3 +50,4 @@ $string['search'] = 'Suchen';
 $string['clear'] = 'Löschen';
 $string['add'] = 'Einschreiben';
 $string['remove'] = 'Entfernen';
+$string['createcoursetounlock'] = 'Erstellen Sie einen neuen Kurs um Schüler und Lehrpersonen einschreiben zu können.';

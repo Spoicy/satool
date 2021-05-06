@@ -150,7 +150,7 @@ if ($course->id != -1) {
     $formtext = html_writer::tag('p', get_string('createcoursetounlock', 'local_satool'));
 }
 
-$html = html_writer::tag('form', $formtext,
+$html = '<br>' . html_writer::tag('form', $formtext,
     ['action' => new moodle_url($PAGE->url, ['sesskey' => sesskey()]), 'method' => 'post', 'class' => 'courseform']);
 
 // Output the page.
