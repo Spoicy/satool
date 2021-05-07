@@ -59,3 +59,38 @@ $string['unassignedcountmatching'] = 'Nicht eingeschriebene Benutzer mit \'{$a->
 $string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
 $string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
 $string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
+
+// Project definition translations.
+$string['projstudent1'] = 'Lernende/r 1';
+$string['projstudent2'] = '(Evt.) Lernende/r 2';
+$string['projstudent2_help'] = 'Belassen Sie es bei "Keine", wenn das Projekt eine Alleinarbeit ist.';
+$string['projname'] = 'Projektname';
+$string['projemployer'] = 'Auftraggeber/in';
+$string['projdescription'] = 'Beschreibung der Idee';
+$string['projsketch'] = 'Skizze / Layout der Idee';
+$string['projtools'] = 'Programmier-Tools';
+$string['projtools_help'] = 'Trennen Sie jedes Tool mit einem Komma.';
+$string['projopsystems'] = 'Betriebssystem(e)';
+$string['projopsystems_help'] = 'Trennen Sie jedes Betriebssystem mit einem Komma, wenn Sie mehrere auflisten.';
+$string['projlangs'] = 'Programmiersprache(n)';
+$string['projlangs_help'] = 'Trennen Sie jeder Programmiersprache mit einem Komma, wenn Sie mehrere auflisten.';
+$string['projmusthaves'] = 'Must-haves';
+$string['projmusthaves_help'] = 'Trennen Sie jedes Must-have mit einem Komma.';
+$string['projnicetohaves'] = 'Nice-to-haves';
+$string['projnicetohaves_help'] = 'Trennen Sie jedes Nice-to-have mit einem Komma, wenn Sie mehrere auflisten.';
+$string['projteacher'] = 'Betreuende Person';
+$string['sketchalt'] = 'Projectskizze / Layout';
+
+// Main page translations.
+$string['projectdefinitions'] = 'Projectdefinitionen';
+$string['supervisedprojects'] = 'Betreute Projekte';
+$string['viewproject'] = 'Anschauen';
+$string['superviseproject'] = 'Betreuen';
+$string['editproject'] = 'Bearbeiten';
+
+// Confirm translations.
+$string['confirmsupervise'] = 'Das Projekt \'{$a}\' betreuen?';
+$string['confirmsupervisefull'] = 'Sind Sie sicher, dass Sie das Projekt \'{$a}\' betreuen wollen? Diese Aktion ist unabänderlich.';
+
+// General translations.
+$string['goback'] = 'Zurück';

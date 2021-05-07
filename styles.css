@@ -25,3 +25,7 @@
 .studenttable p {
     margin: .2em 0;
 }
+
+.card-body h4 {
+    margin-bottom: 1.25rem;
+}

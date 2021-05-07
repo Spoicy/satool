@@ -60,7 +60,7 @@ function local_satool_create_course($course) {
     $courseid = $DB->insert_record('local_satool_courses', $course);
     $course->id = $courseid;
     $course = file_postupdate_standard_filemanager($course, 'coursefiles', $manageroptions, $context,
-        'local_satool', 'document', $course->id * 10000);
+        'local_satool', 'document', $course->id * 1000000);
     $DB->update_record('local_satool_courses', $course);
     return $courseid;
 }
@@ -100,7 +100,7 @@ function local_satool_update_course($course) {
 
     $course->name = trim($course->name);
     $course = file_postupdate_standard_filemanager($course, 'coursefiles', $manageroptions, $context,
-        'local_satool', 'document', $course->id * 10000);
+        'local_satool', 'document', $course->id * 1000000);
     $DB->update_record('local_satool_courses', $course);
 }
 
@@ -501,4 +501,69 @@ function local_satool_load_coursestudentform($course) {
         ');
 
     return $html;
+}
+
+/**
+ * Insert a new project definition into the database
+ *
+ * @param stdClass $course
+ * @param int $courseid
+ */
+function local_satool_create_projdef($projdef, $courseid) {
+    global $DB, $CFG;
+
+    $context = context_system::instance();
+    $manageroptions = array(
+        'maxfiles' => 1,
+        'accepted_types' => array('.svg', '.jpg', '.png')
+    );
+
+    if (!is_object($projdef)) {
+        $projdef = (object) $projdef;
+    }
+
+    $trimmable = ['name', 'employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
+    foreach ($trimmable as $trim) {
+        $projdef->$trim = trim($projdef->$trim);
+    }
+
+    $project = new stdClass();
+    $project->definition = null;
+    $projectid = $DB->insert_record('local_satool_projects', $project);
+    $project->id = $projectid;
+    $projdef = file_postupdate_standard_filemanager($projdef, 'projsketch', $manageroptions, $context,
+        'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
+    $project->definition = json_encode($projdef);
+    $DB->update_record('local_satool_projects', $project);
+    return $project;
+}
+
+/**
+ * Update an existing project definition
+ *
+ * @param stdClass $project
+ * @param int $courseid
+ */
+function local_satool_update_projdef($projdef, $courseid, $project) {
+    global $DB, $CFG;
+
+    $context = context_system::instance();
+    $manageroptions = array(
+        'maxfiles' => 1,
+        'accepted_types' => array('.svg', '.jpg', '.png')
+    );
+
+    if (!is_object($projdef)) {
+        $projdef = (object) $projdef;
+    }
+
+    $trimmable = ['name', 'employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
+    foreach ($trimmable as $trim) {
+        $projdef->$trim = trim($projdef->$trim);
+    }
+
+    $projdef = file_postupdate_standard_filemanager($projdef, 'projsketch', $manageroptions, $context,
+        'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
+    $project->definition = json_encode($projdef);
+    $DB->update_record('local_satool_projects', $project);
 }

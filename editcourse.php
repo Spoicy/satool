@@ -49,8 +49,7 @@ $PAGE->set_heading(get_string('title', 'local_satool'));
 // Set additional values.
 $returnurl = new moodle_url('/local/satool');
 $manageroptions = array(
-    'maxfiles' => 2,
-    'accepted_types' => array('.mp4', '.mov', '.jpg', '.png')
+    'maxfiles' => 5
 );
 
 $html = '';
@@ -114,7 +113,7 @@ if (optional_param('studentremove', false, PARAM_BOOL) && count($assignedstudent
 // Prepare Filemanager if course exists.
 if ($course->id !== -1) {
     $course = file_prepare_standard_filemanager($course, 'coursefiles', $manageroptions, $PAGE->context,
-        'local_satool', 'document', $course->id * 10000);
+        'local_satool', 'document', $course->id * 1000000);
 }
 $courseform = new local_satool_editcourse_form(new moodle_url($PAGE->url), array('course' => $course));
 
@@ -129,12 +128,12 @@ if ($courseform->is_cancelled()) {
         $coursenewid = local_satool_create_course($coursenew);
         $coursenew->id = $coursenewid;
         $coursesave = file_save_draft_area_files($coursenew->coursefiles_filemanager, $PAGE->context->id,
-            'local_satool', 'document', $coursenew->id * 10000,
+            'local_satool', 'document', $coursenew->id * 1000000,
             array('maxbytes' => $CFG->maxbytes, 'maxfiles' => 5));
         local_satool_update_course($coursenew);
     } else {
-        $testsave = file_save_draft_area_files($coursenew->coursefiles_filemanager, $PAGE->context->id,
-            'local_satool', 'document', $coursenew->id * 10000,
+        $coursesave = file_save_draft_area_files($coursenew->coursefiles_filemanager, $PAGE->context->id,
+            'local_satool', 'document', $coursenew->id * 1000000,
             array('maxbytes' => $CFG->maxbytes, 'maxfiles' => 5));
         local_satool_update_course($coursenew);
     }

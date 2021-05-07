@@ -59,3 +59,38 @@ $string['unassignedcountmatching'] = 'Unassigned users matching \'{$a->search}\'
 $string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
 $string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
 $string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
+
+// Project definition translations.
+$string['projstudent1'] = 'Student 1';
+$string['projstudent2'] = '(Opt.) Student 2';
+$string['projstudent2_help'] = 'Leave as "None" if working alone.';
+$string['projname'] = 'Project name';
+$string['projemployer'] = 'Employer';
+$string['projdescription'] = 'Idea description';
+$string['projsketch'] = 'Sketch / Layout';
+$string['projtools'] = 'Programming tools';
+$string['projtools_help'] = 'Separate each tool with a comma.';
+$string['projopsystems'] = 'Operating system(s)';
+$string['projopsystems_help'] = 'Separate each operating system with a comma if listing multiple.';
+$string['projlangs'] = 'Programming language(s)';
+$string['projlangs_help'] = 'Separate each programming language with a comma if listing multiple.';
+$string['projmusthaves'] = 'Must haves';
+$string['projmusthaves_help'] = 'Separate each must have with a comma.';
+$string['projnicetohaves'] = 'Nice to haves';
+$string['projnicetohaves_help'] = 'Separate each nice to have with a comma if listing multiple.';
+$string['projteacher'] = 'Supervisor';
+$string['sketchalt'] = 'Project sketch / layout';
+
+// Main page translations.
+$string['projectdefinitions'] = 'Project definitions';
+$string['supervisedprojects'] = 'Supervised projects';
+$string['viewproject'] = 'View';
+$string['superviseproject'] = 'Supervise';
+$string['editproject'] = 'Bearbeiten';
+
+// Confirm translations.
+$string['confirmsupervise'] = 'Supervise the project \'{$a}\'?';
+$string['confirmsupervisefull'] = 'Are you sure you want to supervise the project \'{$a}\'? This action is irreversible.';
+
+// General translations.
+$string['goback'] = 'Go back';
