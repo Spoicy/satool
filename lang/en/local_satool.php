@@ -83,7 +83,10 @@ $string['sketchalt'] = 'Project sketch / layout';
 
 // Main page translations.
 $string['projectdefinitions'] = 'Project definitions';
+$string['projectdefinition'] = 'Project definition';
 $string['supervisedprojects'] = 'Supervised projects';
+$string['supervisedproject'] = 'Project';
+
 $string['viewproject'] = 'View';
 $string['superviseproject'] = 'Supervise';
 $string['editproject'] = 'Bearbeiten';

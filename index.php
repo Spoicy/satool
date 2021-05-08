@@ -34,14 +34,22 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
 
+// Prepare html variables
 $html = '';
 $supprojectshtml = '';
 
+// Prepare bools to show project definitions or supervised projects depending on if they exist.
+$showdefs = $showproj = 0;
+
+// Get required database objects.
 $course = array_reverse($DB->get_records('local_satool_courses'))[0];
 $teacher = $DB->get_record('local_satool_teachers', ['courseid' => $course->id, 'userid' => $USER->id]);
 $student = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $USER->id]);
+
+// Display different layouts depending on permissions and roles.
 if ($teacher) {
     $cards = '';
+    $supcards = '';
     $projdefstudents = $DB->get_records_select('local_satool_students', 'courseid = ? AND projectid IS NOT NULL',
         [$course->id]);
     $projectids = array();
@@ -53,7 +61,8 @@ if ($teacher) {
     foreach ($projectids as $id) {
         $project = $DB->get_record('local_satool_projects', ['id' => $id]);
         $projdef = json_decode($project->definition);
-        if ($projdef->status != -1) {
+        if ($projdef->status != 1) {
+            $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
@@ -74,11 +83,35 @@ if ($teacher) {
                     'card-body'),
                 'card');
             $cards .= $card;
+        } else if ($projdef->status == 1 && $projdef->teacher == $teacher->userid) {
+            $showproj = 1;
+            $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            if ($projdef->student2 != 0) {
+                $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
+                $names = fullname($student1) . ', ' . fullname($student2);
+            } else {
+                $names = fullname($student1);
+            }
+            $card = html_writer::div(
+                html_writer::tag('h5', $names, ['class' => 'card-header']) .
+                html_writer::div(
+                    html_writer::tag('h4', $projdef->name) .
+                    html_writer::tag('a', get_string('viewproject', 'local_satool'),
+                        ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id,]),
+                            'class' => 'btn btn-primary mr-2']) .
+                    html_writer::tag('a', get_string('gradeproject', 'local_satool'),
+                        ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $project->id]),
+                        'class' => 'btn btn-secondary']),
+                    'card-body'),
+                'card');
+            $supcards .= $card;
         }
     }
     $projdefshtml = html_writer::div($cards, 'card-columns');
+    $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else if (has_capability('local/satool:viewallprojects', $PAGE->context)) {
     $cards = '';
+    $supcards = '';
     $projdefstudents = $DB->get_records_select('local_satool_students', 'courseid = ? AND projectid IS NOT NULL',
         [$course->id]);
     $projectids = array();
@@ -91,6 +124,7 @@ if ($teacher) {
         $project = $DB->get_record('local_satool_projects', ['id' => $id]);
         $projdef = json_decode($project->definition);
         if ($projdef->status != 1) {
+            $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
@@ -108,14 +142,36 @@ if ($teacher) {
                     'card-body'),
                 'card');
             $cards .= $card;
+        } else if ($projdef->status == 1) {
+            $showproj = 1;
+            $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            if ($projdef->student2 != 0) {
+                $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
+                $names = fullname($student1) . ', ' . fullname($student2);
+            } else {
+                $names = fullname($student1);
+            }
+            $card = html_writer::div(
+                html_writer::tag('h5', $names, ['class' => 'card-header']) .
+                html_writer::div(
+                    html_writer::tag('h4', $projdef->name) .
+                    html_writer::tag('a', get_string('viewproject', 'local_satool'),
+                        ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id]),
+                        'class' => 'btn btn-primary mr-2']),
+                    'card-body'),
+                'card');
+            $supcards .= $card;
         }
     }
     $projdefshtml = html_writer::div($cards, 'card-columns');
+    $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else if ($student) {
     $cards = '';
+    $supcards = '';
     $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
     $projdef = json_decode($project->definition);
         if ($projdef->status != 1) {
+            $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
@@ -136,15 +192,51 @@ if ($teacher) {
                     'card-body'),
                 'card');
             $cards .= $card;
+        } else if ($projdef->status == 1) {
+            $showproj = 1;
+            $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            if ($projdef->student2 != 0) {
+                $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
+                $names = fullname($student1) . ', ' . fullname($student2);
+            } else {
+                $names = fullname($student1);
+            }
+            $card = html_writer::div(
+                html_writer::tag('h5', $names, ['class' => 'card-header']) .
+                html_writer::div(
+                    html_writer::tag('h4', $projdef->name) .
+                    html_writer::tag('a', get_string('viewproject', 'local_satool'),
+                        ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id]),
+                        'class' => 'btn btn-primary mr-2']),
+                    'card-body'),
+                'card');
+            $supcards .= $card;
         }
     $projdefshtml = html_writer::div($cards, 'card-columns');
+    $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else {
     print_error('accessdenied', 'admin');
 }
 
-$html .= html_writer::tag('h2', get_string('projectdefinitions', 'local_satool'), ['class' => 'mb-4']);
-$html .= $projdefshtml;
-$html .= html_writer::tag('h2', get_string('supervisedprojects', 'local_satool'));
+// Setup html to output.
+if ($student) {
+    if ($showdefs) {
+        $html .= html_writer::tag('h2', get_string('projectdefinition', 'local_satool'), ['class' => 'mb-4']);
+        $html .= $projdefshtml;
+    }
+} else {
+    $html .= html_writer::tag('h2', get_string('projectdefinitions', 'local_satool'), ['class' => 'mb-4']);
+    $html .= $projdefshtml;
+}
+if ($student) {
+    if ($showproj) {
+        $html .= html_writer::tag('h2', get_string('supervisedproject', 'local_satool'), ['class' => 'mb-4']);
+        $html .= $supprojhtml;
+    }
+} else {
+    $html .= html_writer::tag('h2', get_string('supervisedprojects', 'local_satool'), ['class' => 'mb-4']);
+    $html .= $supprojhtml;
+}
 
 // Output the page.
 echo $OUTPUT->header();
