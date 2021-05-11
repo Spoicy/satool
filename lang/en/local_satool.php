@@ -102,12 +102,19 @@ $string['uploadlinks'] = 'Upload links';
 $string['submitproject'] = 'Submit project';
 $string['documents'] = 'Documents';
 $string['nodocumentsfound'] = 'No documents have been uploaded yet.';
+$string['statusgraded'] = 'Project status: Graded';
+$string['statussubmitted'] = 'Project status: Submitted';
+$string['statusincomplete'] = 'Project status: Incomplete';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'File / Link title';
 $string['projfilesnote'] = 'File / Link note';
 $string['projfiles'] = 'File / Document';
 $string['projfileslink'] = 'Link';
+
+// Project submission page translations.
+$string['projsubgithub'] = 'GitHub Link';
+$string['projsubfiles'] = '.zip File';
 
 // General translations.
 $string['goback'] = 'Go back';

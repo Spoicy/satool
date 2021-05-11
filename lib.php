@@ -623,7 +623,8 @@ function local_satool_upload_doc($document, $courseid, $projectid) {
             'local_satool', 'document', $docfullid);
         $fs = get_file_storage();
         $files = $fs->get_area_files(1, 'local_satool', 'document', $docfullid);
-        $document->path = '/pluginfile.php/1/local_satool/document/' . $docfullid . '/' . $files[0]->get_filename();
+        $file = array_pop($files);
+        $document->path = '/pluginfile.php/1/local_satool/document/' . $docfullid . '/' . $file->get_filename();
     } else {
         $document->path = $document->link;
     }
@@ -661,10 +662,37 @@ function local_satool_update_doc($document, $courseid, $projectid) {
             'local_satool', 'document', $docfullid);
         $fs = get_file_storage();
         $files = $fs->get_area_files(1, 'local_satool', 'document', $docfullid);
-        $file = array_shift($files);
+        $file = array_pop($files);
         $document->path = '/pluginfile.php/1/local_satool/document/' . $docfullid . '/' . $file->get_filename();
     } else {
         $document->path = $document->link;
     }
     $DB->update_record('local_satool_documents', $document);
+}
+
+/**
+ * Insert a new project submission into the database
+ *
+ * @param stdClass $projsub
+ * @param int $courseid
+ * @param stdClass $project
+ */
+function local_satool_submit_projsub($projsub, $courseid, $project) {
+    global $DB, $CFG;
+
+    $context = context_system::instance();
+    $manageroptions = array(
+        'maxfiles' => 1,
+        'accepted_types' => array('.zip')
+    );
+
+    if (!is_object($projsub)) {
+        $projsub = (object) $projsub;
+    }
+
+    $projsub->github = trim($projsub->github);
+    $projsub = file_postupdate_standard_filemanager($projsub, 'projsubfiles', $manageroptions, $context,
+        'local_satool', 'document', $courseid * 1000000 + $project->id * 100 + 1);
+    $project->submission = json_encode($projsub);
+    $DB->update_record('local_satool_projects', $project);
 }

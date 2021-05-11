@@ -38,7 +38,7 @@ $course = array_reverse($DB->get_records('local_satool_courses'))[0];
 $student1 = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $USER->id]);
 $student2 = $DB->get_record_select('local_satool_students', 'courseid = ? AND projectid = ? AND userid != ?',
     [$course->id, $id, $USER->id]);
-if (!$student1) {
+if (!$student1 && !$student2) {
     print_error('accessdenied', 'admin');
 }
 

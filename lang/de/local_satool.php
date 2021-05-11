@@ -98,15 +98,23 @@ $string['confirmsupervisefull'] = 'Sind Sie sicher, dass Sie das Projekt \'{$a}\
 // Project page translations.
 $string['viewdefinition'] = 'Projektdefinition anschauen';
 $string['uploaddocuments'] = 'Dokumente hochladen';
+$string['uploadlinks'] = 'Links hochladen';
 $string['submitproject'] = 'Projekt einreichen';
 $string['documents'] = 'Dokumente';
 $string['nodocumentsfound'] = 'Keine Dokumente gefunden.';
+$string['statusgraded'] = 'Projectstatus: Bewertet und Abgeschlossen';
+$string['statussubmitted'] = 'Projectstatus: Eingereicht';
+$string['statusincomplete'] = 'Projectstatus: Nicht fertig';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'Datei-/Linktitel';
 $string['projfilesnote'] = 'Datei-/Linknotiz';
 $string['projfiles'] = 'Datei/Document';
 $string['projfileslink'] = 'Link';
+
+// Project submission page translations.
+$string['projsubgithub'] = 'GitHub-Link';
+$string['projsubfiles'] = '.zip-Datei';
 
 // General translations.
 $string['goback'] = 'Zurück';

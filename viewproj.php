@@ -31,7 +31,7 @@ require_login();
 $id = required_param('id', PARAM_INT);
 
 // Set Page variables.
-$PAGE->set_url(new moodle_url('/local/satool/viewproj.php'));
+$PAGE->set_url(new moodle_url('/local/satool/viewproj.php', ['id' => $id]));
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
@@ -69,7 +69,16 @@ if ($teacher) {
         ['href' => new moodle_url('/local/satool/submitproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']);
 }
 
-$html .= html_writer::tag('h2', $projdef->name, ['class' => 'mb-4']) . $buttons .
+if ($project->grade) {
+    $status = get_string('statusgraded', 'local_satool');
+} else if ($project->submission) {
+    $status = get_string('statussubmitted', 'local_satool');
+} else {
+    $status = get_string('statusincomplete', 'local_satool');
+}
+
+$html .= html_writer::tag('h2', $projdef->name) .
+    html_writer::tag('h4', $status, ['class' => 'mb-4']) . $buttons .
     html_writer::tag('h3', get_string('documents', 'local_satool'), ['class' => 'mt-5']);
 
 if (count($documents)) {
