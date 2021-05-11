@@ -90,7 +90,7 @@ if ($uploadform->is_cancelled()) {
     $uploadnew->id = $id;
     if ($uploadnew->id == -1) {
         $uploadnewid = local_satool_upload_doc($uploadnew, $student->courseid, $project->id);
-        $uploadnew->id = $uploadnewid;
+        $uploadnew->id = $uploadnewid->id;
         if (isset($uploadnew->projfiles_filemanager)) {
             $uploadsave = file_save_draft_area_files($uploadnew->projfiles_filemanager, $PAGE->context->id,
                 'local_satool', 'document', $student->courseid * 1000000 + $projectid * 100 + $uploadnew->fileid + 10,

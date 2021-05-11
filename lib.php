@@ -138,6 +138,14 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
     $filename = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
 
+    $projectid = (($args[0] % 1000000) - ($args[0] % 100)) / 100;
+    $project = $DB->get_record('local_satool_projects', ['id' => $projectid]);
+    $projdef = json_decode($project->definition);
+    $usernotinproject = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id;
+    if (!has_capability('local/satool:viewallprojects', context_system::instance()) && $usernotinproject) {
+        send_file_not_found();
+    }
+
     if (!$file = $fs->get_file($context->id, 'local_satool', 'document', $args[0], '/', $filename) or $file->is_directory()) {
         send_file_not_found();
     }
