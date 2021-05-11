@@ -86,14 +86,28 @@ $string['projectdefinitions'] = 'Project definitions';
 $string['projectdefinition'] = 'Project definition';
 $string['supervisedprojects'] = 'Supervised projects';
 $string['supervisedproject'] = 'Project';
-
 $string['viewproject'] = 'View';
 $string['superviseproject'] = 'Supervise';
 $string['editproject'] = 'Bearbeiten';
+$string['gradeproject'] = 'Grade';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Supervise the project \'{$a}\'?';
 $string['confirmsupervisefull'] = 'Are you sure you want to supervise the project \'{$a}\'? This action is irreversible.';
+
+// Project page translations.
+$string['viewdefinition'] = 'View project definition';
+$string['uploaddocuments'] = 'Upload documents';
+$string['uploadlinks'] = 'Upload links';
+$string['submitproject'] = 'Submit project';
+$string['documents'] = 'Documents';
+$string['nodocumentsfound'] = 'No documents have been uploaded yet.';
+
+// Document uploading page translations.
+$string['projfilestitle'] = 'File / Link title';
+$string['projfilesnote'] = 'File / Link note';
+$string['projfiles'] = 'File / Document';
+$string['projfileslink'] = 'Link';
 
 // General translations.
 $string['goback'] = 'Go back';

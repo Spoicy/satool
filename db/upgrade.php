@@ -173,4 +173,64 @@ function xmldb_local_satool_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021050600, 'local', 'satool');
     }
 
+    if ($oldversion < 2021051000) {
+
+        // Define field title to be added to local_satool_documents.
+        $table = new xmldb_table('local_satool_documents');
+        $field = new xmldb_field('title', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'for');
+
+        // Conditionally launch add field title.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field note to be added to local_satool_documents.
+        $table = new xmldb_table('local_satool_documents');
+        $field = new xmldb_field('note', XMLDB_TYPE_CHAR, '455', null, null, null, null, 'title');
+
+        // Conditionally launch add field note.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021051000, 'local', 'satool');
+    }
+
+    if ($oldversion < 2021051001) {
+
+        // Rename field managerid on table local_satool_documents to fileid.
+        $table = new xmldb_table('local_satool_documents');
+        $field = new xmldb_field('managerid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'id');
+
+        // Launch rename field managerid.
+        $dbman->rename_field($table, $field, 'fileid');
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021051001, 'local', 'satool');
+    }
+
+    if ($oldversion < 2021051100) {
+
+        // Define field by to be dropped from local_satool_documents.
+        $table = new xmldb_table('local_satool_documents');
+        $field = new xmldb_field('by');
+
+        // Conditionally launch drop field by.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Define field for to be dropped from local_satool_documents.
+        $table = new xmldb_table('local_satool_documents');
+        $field = new xmldb_field('for');
+
+        // Conditionally launch drop field for.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021051100, 'local', 'satool');
+    }
 }

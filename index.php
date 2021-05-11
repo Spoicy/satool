@@ -170,7 +170,7 @@ if ($teacher) {
     $supcards = '';
     $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
     $projdef = json_decode($project->definition);
-        if ($projdef->status != 1) {
+        if ($project && $projdef->status != 1) {
             $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
             if ($projdef->student2 != 0) {
@@ -192,7 +192,7 @@ if ($teacher) {
                     'card-body'),
                 'card');
             $cards .= $card;
-        } else if ($projdef->status == 1) {
+        } else if ($project && $projdef->status == 1) {
             $showproj = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
             if ($projdef->student2 != 0) {
@@ -221,21 +221,21 @@ if ($teacher) {
 // Setup html to output.
 if ($student) {
     if ($showdefs) {
-        $html .= html_writer::tag('h2', get_string('projectdefinition', 'local_satool'), ['class' => 'mb-4']);
-        $html .= $projdefshtml;
+        $html .= html_writer::tag('h2', get_string('projectdefinition', 'local_satool'), ['class' => 'mb-4']) .
+            $projdefshtml;
     }
 } else {
-    $html .= html_writer::tag('h2', get_string('projectdefinitions', 'local_satool'), ['class' => 'mb-4']);
-    $html .= $projdefshtml;
+    $html .= html_writer::tag('h2', get_string('projectdefinitions', 'local_satool'), ['class' => 'mb-4']) .
+        $projdefshtml;
 }
 if ($student) {
     if ($showproj) {
-        $html .= html_writer::tag('h2', get_string('supervisedproject', 'local_satool'), ['class' => 'mb-4']);
-        $html .= $supprojhtml;
+        $html .= html_writer::tag('h2', get_string('supervisedproject', 'local_satool'), ['class' => 'mb-4']) .
+            $supprojhtml;
     }
 } else {
-    $html .= html_writer::tag('h2', get_string('supervisedprojects', 'local_satool'), ['class' => 'mb-4']);
-    $html .= $supprojhtml;
+    $html .= html_writer::tag('h2', get_string('supervisedprojects', 'local_satool'), ['class' => 'mb-4']) .
+        $supprojhtml;
 }
 
 // Output the page.

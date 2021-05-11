@@ -41,8 +41,8 @@ function local_satool_create_course($course) {
     }
 
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
-        '\local_satool\task\submitdate_task' => $course->submitdate,
-        '\local_satool\task\deadline_task' => $course->deadline];
+        '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
+        '\local_satool\task\deadline_task' => $course->deadline - 604800];
     
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
@@ -84,8 +84,8 @@ function local_satool_update_course($course) {
     }
 
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
-        '\local_satool\task\submitdate_task' => $course->submitdate,
-        '\local_satool\task\deadline_task' => $course->deadline];
+        '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
+        '\local_satool\task\deadline_task' => $course->deadline - 604800];
     
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
@@ -535,6 +535,11 @@ function local_satool_create_projdef($projdef, $courseid) {
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
+    $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1]);
+    if ($stud1) {
+        $stud1->projectid = $project->id;
+        $DB->update_record('local_satool_students', $stud1);
+    }
     return $project;
 }
 
@@ -566,4 +571,100 @@ function local_satool_update_projdef($projdef, $courseid, $project) {
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
+    $oldstud2 = $DB->get_record('local_satool_students', ['projectid' => $project->id]);
+    if ($oldstud2) {
+        $oldstud2->projectid = null;
+        $DB->update_record('local_satool_students', $oldstud2);
+    }
+    $stud2 = $DB->get_record('local_satool_students', ['userid' => $projdef->student2]);
+    if ($stud2) {
+        $stud2->projectid = $project->id;
+        $DB->update_record('local_satool_students', $stud2);
+    }
+}
+
+/**
+ * Insert a new project definition into the database
+ *
+ * @param stdClass $course
+ * @param int $courseid
+ */
+function local_satool_upload_doc($document, $courseid, $projectid) {
+    global $DB, $CFG;
+
+    $context = context_system::instance();
+    $filetypes = array('.pdf', '.docx', '.xlsx', '.png', '.jpg', '.csv', '.svg', '.txt', '.zip', '.rar',
+        '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
+    $manageroptions = array(
+        'maxfiles' => 1,
+        'accepted_types' => $filetypes
+    );
+
+    if (!is_object($document)) {
+        $document = (object) $document;
+    }
+
+    if ($document->type) {
+        $projdocuments = $DB->get_records_select('local_satool_documents', 'fileid != 0 AND projectid = ?', [$projectid]);
+        $document->fileid = count($projdocuments) + 1;
+    } else {
+        $document->fileid = 0;
+    }
+    $document->status = 1;
+    $document->title = trim($document->title);
+    $document->note = trim($document->note);
+    $documentid = $DB->insert_record('local_satool_documents', $document);
+    $document->id = $documentid;
+    
+    $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
+    
+    if ($document->type) {
+        $document = file_postupdate_standard_filemanager($document, 'projfiles', $manageroptions, $context,
+            'local_satool', 'document', $docfullid);
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(1, 'local_satool', 'document', $docfullid);
+        $document->path = '/pluginfile.php/1/local_satool/document/' . $docfullid . '/' . $files[0]->get_filename();
+    } else {
+        $document->path = $document->link;
+    }
+    $DB->update_record('local_satool_documents', $document);
+    return $document;
+}
+
+/**
+ * Update an existing document
+ *
+ * @param stdClass $project
+ * @param int $courseid
+ */
+function local_satool_update_doc($document, $courseid, $projectid) {
+    global $DB, $CFG;
+
+    $context = context_system::instance();
+    $filetypes = array('.pdf', '.docx', '.xlsx', '.png', '.jpg', '.csv', '.svg', '.txt', '.zip', '.rar',
+        '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
+    $manageroptions = array(
+        'maxfiles' => 1,
+        'accepted_types' => $filetypes
+    );
+
+    if (!is_object($document)) {
+        $document = (object) $document;
+    }
+
+    $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
+
+    $document->title = trim($document->title);
+    $document->note = trim($document->note);
+    if ($document->type) {
+        $document = file_postupdate_standard_filemanager($document, 'projfiles', $manageroptions, $context,
+            'local_satool', 'document', $docfullid);
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(1, 'local_satool', 'document', $docfullid);
+        $file = array_shift($files);
+        $document->path = '/pluginfile.php/1/local_satool/document/' . $docfullid . '/' . $file->get_filename();
+    } else {
+        $document->path = $document->link;
+    }
+    $DB->update_record('local_satool_documents', $document);
 }

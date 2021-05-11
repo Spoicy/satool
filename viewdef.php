@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The SA-Tool mainpage.
+ * The SA-Tool project definition page.
  *
  * @package    local_satool
  * @copyright  2021 Jeremy Funke
@@ -27,17 +27,17 @@ require_once(__DIR__ . '/../../config.php');
 require_login();
 !isguestuser($USER->id) || print_error('noguest');
 
-// Set Page variables.
-$PAGE->set_url(new moodle_url('/local/satool/'));
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('standard');
-$PAGE->set_title(get_string('title', 'local_satool'));
-$PAGE->set_heading(get_string('title', 'local_satool'));
-
 // Get params.
 $id = required_param('id', PARAM_INT);
 $supervise = optional_param('supervise', 0, PARAM_INT);
 $superviseconfirm = optional_param('superviseconfirm', '', PARAM_ALPHANUM);
+
+// Set Page variables.
+$PAGE->set_url(new moodle_url('/local/satool/viewdef.php'));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_pagelayout('standard');
+$PAGE->set_title(get_string('title', 'local_satool'));
+$PAGE->set_heading(get_string('title', 'local_satool'));
 
 // Get various database objects
 $teacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
@@ -47,6 +47,12 @@ $projdef = json_decode($project->definition);
 $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
 $projdefteacher = $DB->get_record('user', ['id' => $projdef->teacher]);
+
+if (($student1->id != $USER->id && ($student2 && $student2->id != $USER->id) &&
+        ($projdefteacher && $projdefteacher->id != $USER->id) &&
+        !has_capability('local/satool:viewallprojects', $PAGE->context)) && !($teacher && $projdef->status != 1)) {
+    print_error('accessdenied', 'admin');
+}
 
 if (($supervise || $superviseconfirm) && $projdef->teacher == 0) {
     if ($teacher) {
@@ -112,14 +118,14 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         'nicetohaves' => 'projnicetohaves'
     ];
     foreach ($explodearray as $key => $explode) {
-        $items = explode(', ', $projdef->$key);
+        $items = explode(',', $projdef->$key);
         $$explode = '';
         $i = 0;
         foreach ($items as $item) {
             if ($i == 0) {
-                $$explode .= $item;
+                $$explode .= trim($item);
             } else {
-                $$explode .= '<br>' . $item;
+                $$explode .= '<br>' . trim($item);
             }
             $i++;
         }

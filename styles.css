@@ -29,3 +29,8 @@
 .card-body h4 {
     margin-bottom: 1.25rem;
 }
+
+.doc-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+}

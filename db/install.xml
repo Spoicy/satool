@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/satool/db" VERSION="20210505" COMMENT="XMLDB file for Moodle local/satool"
+<XMLDB PATH="local/satool/db" VERSION="20210511" COMMENT="XMLDB file for Moodle local/satool"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -63,10 +63,10 @@
     <TABLE NAME="local_satool_documents" COMMENT="Documents table for the SA-Tool.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="managerid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id given by the filemanager used to store the document."/>
+        <FIELD NAME="fileid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id given by the filemanager used to store the document. This is project specific."/>
         <FIELD NAME="path" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The file path of the uploaded document."/>
-        <FIELD NAME="by" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the user who uploaded the file."/>
-        <FIELD NAME="for" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the user who the file was uploaded for."/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Title of the document."/>
+        <FIELD NAME="note" TYPE="char" LENGTH="455" NOTNULL="false" SEQUENCE="false" COMMENT="A small description of the document, optional."/>
         <FIELD NAME="type" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The type of the file which indicates from where it was uploaded."/>
         <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="The status of the file. Deactivates if the file gets replaced with a new one."/>
         <FIELD NAME="projectid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the project the document was uploaded for."/>

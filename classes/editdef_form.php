@@ -45,7 +45,7 @@ class local_satool_editdef_form extends moodleform {
         $mform = $this->_form;
 
         if (!is_array($this->_customdata)) {
-            throw new coding_exception('invalid custom data for course_edit_form');
+            throw new coding_exception('invalid custom data for def_edit_form');
         }
 
         $year = date('Y');
@@ -96,7 +96,8 @@ class local_satool_editdef_form extends moodleform {
 
         // Set up form.
         $mform->addElement('select', 'student1', get_string('projstudent1', 'local_satool'),
-            [$curuserid => fullname($curuser)], 'disabled');
+            [$curuserid => fullname($curuser)]);
+        $mform->setDefault('student1', $curuserid);
 
         $mform->addElement('select', 'student2', get_string('projstudent2', 'local_satool'), $studentoptions);
         $mform->addHelpButton('student2', 'projstudent2', 'local_satool');

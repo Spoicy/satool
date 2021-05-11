@@ -89,10 +89,24 @@ $string['supervisedproject'] = 'Projekt';
 $string['viewproject'] = 'Anschauen';
 $string['superviseproject'] = 'Betreuen';
 $string['editproject'] = 'Bearbeiten';
+$string['gradeproject'] = 'Bewerten';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Das Projekt \'{$a}\' betreuen?';
 $string['confirmsupervisefull'] = 'Sind Sie sicher, dass Sie das Projekt \'{$a}\' betreuen wollen? Diese Aktion ist unabänderlich.';
+
+// Project page translations.
+$string['viewdefinition'] = 'Projektdefinition anschauen';
+$string['uploaddocuments'] = 'Dokumente hochladen';
+$string['submitproject'] = 'Projekt einreichen';
+$string['documents'] = 'Dokumente';
+$string['nodocumentsfound'] = 'Keine Dokumente gefunden.';
+
+// Document uploading page translations.
+$string['projfilestitle'] = 'Datei-/Linktitel';
+$string['projfilesnote'] = 'Datei-/Linknotiz';
+$string['projfiles'] = 'Datei/Document';
+$string['projfileslink'] = 'Link';
 
 // General translations.
 $string['goback'] = 'Zurück';
