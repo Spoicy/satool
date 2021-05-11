@@ -34,3 +34,7 @@
     font-weight: 600;
     font-size: 1.25rem;
 }
+
+.projgradetable label {
+    padding-left: 5px;
+}

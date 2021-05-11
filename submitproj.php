@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The SA-Tool edit project definition page.
+ * The SA-Tool submit project page.
  *
  * @package    local_satool
  * @copyright  2021 Jeremy Funke

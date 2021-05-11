@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Definition of local_helloworld tasks.
+ * Definition of local_satool tasks.
  *
- * @package    local_helloworld
+ * @package    local_satool
  * @category   task
  * @copyright  2021 Jae Funke
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

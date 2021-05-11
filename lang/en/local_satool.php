@@ -105,6 +105,10 @@ $string['nodocumentsfound'] = 'No documents have been uploaded yet.';
 $string['statusgraded'] = 'Project status: Graded';
 $string['statussubmitted'] = 'Project status: Submitted';
 $string['statusincomplete'] = 'Project status: Incomplete';
+$string['submission'] = 'Project submission';
+$string['grade'] = 'Grade';
+$string['gradetotals'] = '{$a->total}/{$a->totalall} points';
+$string['gradevalue'] = 'Grade: ';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'File / Link title';
@@ -115,6 +119,9 @@ $string['projfileslink'] = 'Link';
 // Project submission page translations.
 $string['projsubgithub'] = 'GitHub Link';
 $string['projsubfiles'] = '.zip File';
+
+// Project grade translations.
+$string['submitgrade'] = 'Submit grade';
 
 // General translations.
 $string['goback'] = 'Go back';

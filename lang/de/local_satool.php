@@ -105,12 +105,19 @@ $string['nodocumentsfound'] = 'Keine Dokumente gefunden.';
 $string['statusgraded'] = 'Projectstatus: Bewertet und Abgeschlossen';
 $string['statussubmitted'] = 'Projectstatus: Eingereicht';
 $string['statusincomplete'] = 'Projectstatus: Nicht fertig';
+$string['submission'] = 'Projectabgabe';
+$string['grade'] = 'Bewertung';
+$string['gradetotal'] = '{$a->total}/{$a->totalall} Punkte';
+$string['gradevalue'] = 'Note: ';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'Datei-/Linktitel';
 $string['projfilesnote'] = 'Datei-/Linknotiz';
 $string['projfiles'] = 'Datei/Document';
 $string['projfileslink'] = 'Link';
+
+// Project grade translations.
+$string['submitgrade'] = 'Bewertung einreichen';
 
 // Project submission page translations.
 $string['projsubgithub'] = 'GitHub-Link';

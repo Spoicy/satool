@@ -57,6 +57,9 @@ function local_satool_create_course($course) {
     }
 
     $course->name = trim($course->name);
+    $course->rubric = '{"allg":["Allgemeiner Eindruck",4,1],"doc":["Dokumentation",4,2],' .
+        '"analyse":["Analyse",4,1],"des":["Design",4,1],"real":["Realisation",4,3],"test":["Tests",4,1],' .
+        '"praes":["Pr\u00e4sentation",4,1],"git":["GitHub",2,2]}';
     $courseid = $DB->insert_record('local_satool_courses', $course);
     $course->id = $courseid;
     $course = file_postupdate_standard_filemanager($course, 'coursefiles', $manageroptions, $context,

@@ -41,8 +41,9 @@ $PAGE->set_heading(get_string('title', 'local_satool'));
 $project = $DB->get_record('local_satool_projects', ['id' => $id]);
 $student = $DB->get_record('local_satool_students', ['userid' => $USER->id, 'projectid' => $id]);
 $teacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
-$course = $DB->get_record('local_satool_courses', ['id' => $student->courseid]);
 $projdef = json_decode($project->definition);
+$courseidstud = $DB->get_record('local_satool_students', ['userid' => $projdef->student1]);
+$course = $DB->get_record('local_satool_courses', ['id' => $courseidstud->courseid]);
 $documents = $DB->get_records_select('local_satool_documents', 'status = 1 AND projectid = ?', [$id]);
 
 // If statement simplifier variables.
@@ -64,15 +65,63 @@ $buttons = html_writer::tag('a', get_string('viewdefinition', 'local_satool'),
 if ($teacher) {
     $buttons .= html_writer::tag('a', get_string('gradeproject', 'local_satool'),
         ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']);
-} else if ($student) {
+} else if ($student && !$project->grade) {
     $buttons .= html_writer::tag('a', get_string('submitproject', 'local_satool'),
         ['href' => new moodle_url('/local/satool/submitproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']);
 }
 
+$mischtml = '';
 if ($project->grade) {
     $status = get_string('statusgraded', 'local_satool');
+
+    $projsub = json_decode($project->submission);
+    $submitid = $course->id * 1000000 + $project->id * 100 + 1;
+    $fs = get_file_storage();
+    $files = $fs->get_area_files(1, 'local_satool', 'document', $submitid);
+    $file = array_pop($files);
+    $mischtml .= html_writer::tag('h3', get_string('submission', 'local_satool'), ['class' => 'mt-4']) .
+        html_writer::tag('h5',
+            html_writer::tag('a', get_string('projsubfiles', 'local_satool'),
+                ['href' => '/pluginfile.php/1/local_satool/document/' . $submitid . '/' . $file->get_filename()])
+            );
+    if ($projsub->github) {
+        $mischtml .= html_writer::tag('h5', html_writer::tag('a', get_string('projsubgithub', 'local_satool'),
+            ['href' => $projsub->github, 'target' => '_blank']));
+    }
+
+    $projgrade = json_decode($project->grade);
+    $rubric = json_decode($course->rubric);
+    $totalgrade = 0;
+    $totalallgrade = 0;
+    foreach ($projgrade as $key => $grade) {
+        $totalgrade += $grade * $rubric->$key[2];
+        $totalallgrade += ($rubric->$key[1] - 1) * $rubric->$key[2];
+    }
+    $finalgrade = round(($totalgrade * 1.0) / ($totalallgrade * 1.0) * 5 + 1, 1);
+    $gradestringvals = new stdClass();
+    $gradestringvals->total = $totalgrade;
+    $gradestringvals->totalall = $totalallgrade;
+    $mischtml .= html_writer::tag('h3', get_string('grade', 'local_satool'), ['class' => 'mt-4 mb-3']) .
+        html_writer::tag('p', get_string('gradetotals', 'local_satool', $gradestringvals), ['class' => 'mb-1']) .
+        html_writer::tag('p', get_string('gradevalue', 'local_satool') .
+            html_writer::tag('b', $finalgrade));
 } else if ($project->submission) {
     $status = get_string('statussubmitted', 'local_satool');
+
+    $projsub = json_decode($project->submission);
+    $submitid = $course->id * 1000000 + $project->id * 100 + 1;
+    $fs = get_file_storage();
+    $files = $fs->get_area_files(1, 'local_satool', 'document', $submitid);
+    $file = array_pop($files);
+    $mischtml .= html_writer::tag('h3', get_string('submission', 'local_satool'), ['class' => 'mt-4']) .
+        html_writer::tag('h5',
+            html_writer::tag('a', get_string('projsubfiles', 'local_satool'),
+                ['href' => '/pluginfile.php/1/local_satool/document/' . $submitid . '/' . $file->get_filename()])
+            );
+    if ($projsub->github) {
+        $mischtml .= html_writer::tag('h5', html_writer::tag('a', get_string('projsubgithub', 'local_satool'),
+            ['href' => $projsub->github, 'target' => '_blank']));
+    }
 } else {
     $status = get_string('statusincomplete', 'local_satool');
 }
@@ -96,6 +145,8 @@ if (count($documents)) {
 } else {
     $html .= html_writer::tag('p', get_string('nodocumentsfound', 'local_satool'));
 }
+
+$html .= $mischtml;
 
 echo $OUTPUT->header();
 echo $html;
