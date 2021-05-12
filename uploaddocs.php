@@ -60,6 +60,13 @@ $student = array_shift($students);
 $curstudent = $DB->get_record('local_satool_students', ['userid' => $USER->id, 'courseid' => $student->courseid]);
 $curteacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
 
+// If statement simplifier variables.
+$userassigned = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id;
+
+if ($userassigned) {
+    print_error('accessdenied', 'admin');
+}
+
 // Check for existing document.
 if ($id == -1) {
     $document = new stdClass();

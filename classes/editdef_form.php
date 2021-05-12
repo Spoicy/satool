@@ -109,6 +109,7 @@ class local_satool_editdef_form extends moodleform {
 
         $mform->addElement('text', 'name', get_string('projname', 'local_satool'), 'size="45"');
         $mform->setType('name', PARAM_TEXT);
+        $mform->addRule('name', $strrequired, 'required', null, 'client');
 
         $mform->addElement('text', 'employer', get_string('projemployer', 'local_satool'));
         $mform->setType('employer', PARAM_TEXT);

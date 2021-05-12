@@ -67,10 +67,12 @@ if (($supervise || $superviseconfirm) && $projdef->teacher == 0) {
             echo $OUTPUT->footer();
             die;
         } else {
-            $projdef->teacher = $teacher->userid;
-            $projdef->status = 1;
-            $project->definition = json_encode($projdef);
-            $DB->update_record('local_satool_projects', $project);
+            if ($projdef->status != 1) {
+                $projdef->teacher = $teacher->userid;
+                $projdef->status = 1;
+                $project->definition = json_encode($projdef);
+                $DB->update_record('local_satool_projects', $project);
+            }
             redirect(new moodle_url('/local/satool'));
         }
     }

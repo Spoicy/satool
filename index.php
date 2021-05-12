@@ -41,6 +41,9 @@ $supprojectshtml = '';
 // Prepare bools to show project definitions or supervised projects depending on if they exist.
 $showdefs = $showproj = 0;
 
+// Array with values to check if project definitions are incomplete.
+$requireddefvals = ['employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
+
 // Get required database objects.
 $course = array_reverse($DB->get_records('local_satool_courses'))[0];
 $teacher = $DB->get_record('local_satool_teachers', ['courseid' => $course->id, 'userid' => $USER->id]);
@@ -70,6 +73,15 @@ if ($teacher) {
             } else {
                 $names = fullname($student1);
             }
+            foreach ($requireddefvals as $val) {
+                if ($projdef->$val == '') {
+                    $warning = '<br>' . html_writer::span(get_string('warningincompletedef', 'local_satool'),
+                        'font-italic text-danger mt-2');
+                }
+            }
+            if (!isset($warning)) {
+                $warning = '';
+            }
             $card = html_writer::div(
                 html_writer::tag('h5', $names, ['class' => 'card-header']) .
                 html_writer::div(
@@ -79,7 +91,7 @@ if ($teacher) {
                             'class' => 'btn btn-primary mr-2']) .
                     html_writer::tag('a', get_string('superviseproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id, 'supervise' => 1]),
-                        'class' => 'btn btn-secondary']),
+                        'class' => 'btn btn-secondary']) . $warning,
                     'card-body'),
                 'card');
             $cards .= $card;
@@ -198,6 +210,15 @@ if ($teacher) {
         } else {
             $names = fullname($student1);
         }
+        foreach ($requireddefvals as $val) {
+            if ($projdef->$val == '') {
+                $warning = '<br>' . html_writer::span(get_string('warningincompletedef', 'local_satool'),
+                    'font-italic text-danger mt-2');
+            }
+        }
+        if (!isset($warning)) {
+            $warning = '';
+        }
         $card = html_writer::div(
             html_writer::tag('h5', $names, ['class' => 'card-header']) .
             html_writer::div(
@@ -207,7 +228,7 @@ if ($teacher) {
                     'class' => 'btn btn-primary mr-2']) .
                 html_writer::tag('a', get_string('editproject', 'local_satool'),
                     ['href' => new moodle_url('/local/satool/editdef.php', ['id' => $project->id]),
-                    'class' => 'btn btn-secondary']),
+                    'class' => 'btn btn-secondary']) . $warning,
                 'card-body'),
             'card');
         $cards .= $card;

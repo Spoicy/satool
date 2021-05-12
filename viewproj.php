@@ -48,7 +48,8 @@ $course = $DB->get_record('local_satool_courses', ['id' => $courseidstud->course
 $documents = $DB->get_records_select('local_satool_documents', 'status = 1 AND projectid = ?', [$id]);
 
 // If statement simplifier variables.
-$userassigned = !$teacher && !$student && !has_capability('local/satool:viewallprojects', $PAGE->context);
+$userassigned = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id &&
+    !has_capability('local/satool:viewallprojects', $PAGE->context);
 
 if (!$project || $projdef->status != 1 || $userassigned) {
     print_error('accessdenied', 'admin');

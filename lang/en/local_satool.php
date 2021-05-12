@@ -93,6 +93,7 @@ $string['gradeproject'] = 'Grade';
 $string['createnewcourse'] = 'Create a new course';
 $string['editcurrentcourse'] = 'Edit current course';
 $string['createnewdef'] = 'Create project definition';
+$string['warningincompletedef'] = 'This project definition is incomplete.';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Supervise the project \'{$a}\'?';

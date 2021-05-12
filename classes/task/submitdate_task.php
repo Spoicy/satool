@@ -42,15 +42,34 @@ class submitdate_task extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB, $SITE;
+        // Array with values to check if project definitions are incomplete.
+        $requireddefvals = ['employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
+
         $course = array_reverse($DB->get_records('local_satool_courses'))[0];
-        $students = $DB->get_records('local_satool_students', ['courseid' => $course->id, 'projectid' => null]);
+        $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
         foreach ($students as $student) {
+            $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
+            $projdef = json_decode($project->definition);
             $user = $DB->get_record('user', ['id' => $student->userid]);
             $dt = new DateTime();
             $dt->setTimestamp($course->submitdate);
             $datetime = $dt->format('d.m.Y H:i');
-            email_to_user($user, $SITE->shortname, "Warn-Email Eingabetermin $course->name",
-                get_string('warningsubmitdatemissing', 'local_satool', $datetime));
+            if (!$projdef) {
+                email_to_user($user, $SITE->shortname, "Warn-Email Eingabetermin $course->name",
+                    get_string('warningsubmitdatemissing', 'local_satool', $datetime));
+            } else {
+                $warning = 0;
+                foreach ($requireddefvals as $val) {
+                    if ($projdef->$val == '') {
+                        $warning = 1;
+                    }
+                }
+                if ($warning) {
+                    email_to_user($user, $SITE->shortname, "Warn-Email Eingabetermin $course->name",
+                        get_string('warningsubmitdateincomplete', 'local_satool', $datetime));
+                }
+            }
+            
         }
     }
 
