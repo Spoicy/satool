@@ -56,10 +56,10 @@ class local_satool_editcourse_form extends moodleform {
             'step' => 5
         );
 
+        // Get course if exists.
         $course = $this->_customdata['course'];
 
         // Accessibility: "Required" is bad legend text.
-        $strgeneral  = get_string('general');
         $strrequired = get_string('required');
 
         // Set up form.

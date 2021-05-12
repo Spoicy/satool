@@ -36,6 +36,7 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
+$PAGE->navbar->add('SA-Tool', new moodle_url('/local/satool'));
 
 // Get database objects.
 $project = $DB->get_record('local_satool_projects', ['id' => $id]);
@@ -47,35 +48,45 @@ $courseidstud = array_shift($courseidstuds);
 $course = $DB->get_record('local_satool_courses', ['id' => $courseidstud->courseid]);
 $documents = $DB->get_records_select('local_satool_documents', 'status = 1 AND projectid = ?', [$id]);
 
+// Set additional navbar element.
+$PAGE->navbar->add($projdef->name);
+
 // If statement simplifier variables.
 $userassigned = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id &&
     !has_capability('local/satool:viewallprojects', $PAGE->context);
 
+// Check if user is allowed to view page.
 if (!$project || $projdef->status != 1 || $userassigned) {
     print_error('accessdenied', 'admin');
 }
 
+// Setup html output variable
 $html = '';
+
+// Prepare buttons.
 $buttons = html_writer::tag('a', get_string('viewdefinition', 'local_satool'),
-    ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']) .
+    ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2 mb-2']) .
     html_writer::tag('a', get_string('uploaddocuments', 'local_satool'),
     ['href' => new moodle_url('/local/satool/uploaddocs.php', ['id' => -1, 'projectid' => $id, 'type' => 1]),
-    'class' => 'btn btn-secondary mr-2']) .
+    'class' => 'btn btn-secondary mr-2 mb-2']) .
     html_writer::tag('a', get_string('uploadlinks', 'local_satool'),
     ['href' => new moodle_url('/local/satool/uploaddocs.php', ['id' => -1, 'projectid' => $id, 'type' => 0]),
-    'class' => 'btn btn-secondary mr-2']);
+    'class' => 'btn btn-secondary mr-2 mb-2']);
 if ($teacher) {
     $buttons .= html_writer::tag('a', get_string('gradeproject', 'local_satool'),
-        ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']);
+        ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2 mb-2']);
 } else if ($student && !$project->grade) {
     $buttons .= html_writer::tag('a', get_string('submitproject', 'local_satool'),
-        ['href' => new moodle_url('/local/satool/submitproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2']);
+        ['href' => new moodle_url('/local/satool/submitproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2 mb-2']);
 }
 
+// Display different elements based on project status.
 $mischtml = '';
 if ($project->grade) {
+    // Set status as complete.
     $status = get_string('statusgraded', 'local_satool');
 
+    // Display submission html.
     $projsub = json_decode($project->submission);
     $submitid = $course->id * 1000000 + $project->id * 100 + 1;
     $fs = get_file_storage();
@@ -91,6 +102,7 @@ if ($project->grade) {
             ['href' => $projsub->github, 'target' => '_blank']));
     }
 
+    // Display grade html.
     $projgrade = json_decode($project->grade);
     $rubric = json_decode($course->rubric);
     $totalgrade = 0;
@@ -103,18 +115,24 @@ if ($project->grade) {
     $gradestringvals = new stdClass();
     $gradestringvals->total = $totalgrade;
     $gradestringvals->totalall = $totalallgrade;
+
+    // Output all elements into misc html
     $mischtml .= html_writer::tag('h3', get_string('grade', 'local_satool'), ['class' => 'mt-4 mb-3']) .
         html_writer::tag('p', get_string('gradetotals', 'local_satool', $gradestringvals), ['class' => 'mb-1']) .
         html_writer::tag('p', get_string('gradevalue', 'local_satool') .
             html_writer::tag('b', $finalgrade));
 } else if ($project->submission) {
+    // Set status as submitted.
     $status = get_string('statussubmitted', 'local_satool');
 
+    // Display submission html.
     $projsub = json_decode($project->submission);
     $submitid = $course->id * 1000000 + $project->id * 100 + 1;
     $fs = get_file_storage();
     $files = $fs->get_area_files(1, 'local_satool', 'document', $submitid);
     $file = array_pop($files);
+
+    // Output submission html and add github element if exists
     $mischtml .= html_writer::tag('h3', get_string('submission', 'local_satool'), ['class' => 'mt-4']) .
         html_writer::tag('h5',
             html_writer::tag('a', get_string('projsubfiles', 'local_satool'),
@@ -125,13 +143,16 @@ if ($project->grade) {
             ['href' => $projsub->github, 'target' => '_blank']));
     }
 } else {
+    // Set status as incomplete.
     $status = get_string('statusincomplete', 'local_satool');
 }
 
+// Add elements to output html variable.
 $html .= html_writer::tag('h2', $projdef->name) .
     html_writer::tag('h4', $status, ['class' => 'mb-4']) . $buttons .
-    html_writer::tag('h3', get_string('documents', 'local_satool'), ['class' => 'mt-5']);
+    html_writer::tag('h3', get_string('documents', 'local_satool'), ['class' => 'mt-4']);
 
+// Display documents if any exist.
 if (count($documents)) {
     $dochtml = '';
     foreach($documents as $document) {
@@ -148,8 +169,8 @@ if (count($documents)) {
     $html .= html_writer::tag('p', get_string('nodocumentsfound', 'local_satool'));
 }
 
+// Output page.
 $html .= $mischtml;
-
 echo $OUTPUT->header();
 echo $html;
 echo $OUTPUT->footer();

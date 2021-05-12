@@ -45,20 +45,25 @@ class submitdate_task extends \core\task\scheduled_task {
         // Array with values to check if project definitions are incomplete.
         $requireddefvals = ['employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
 
+        // Get database objects.
         $course = array_reverse($DB->get_records('local_satool_courses'))[0];
         $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
+        // Cycle through each student.
         foreach ($students as $student) {
+            // Get project, user and datetime
             $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
             $projdef = json_decode($project->definition);
             $user = $DB->get_record('user', ['id' => $student->userid]);
             $dt = new DateTime();
             $dt->setTimestamp($course->submitdate);
             $datetime = $dt->format('d.m.Y H:i');
+            // Display different email text depending on if project definition exists or not.
             if (!$projdef) {
                 email_to_user($user, $SITE->shortname, "Warn-Email Eingabetermin $course->name",
                     get_string('warningsubmitdatemissing', 'local_satool', $datetime));
             } else {
                 $warning = 0;
+                // Check if a value is missing.
                 foreach ($requireddefvals as $val) {
                     if ($projdef->$val == '') {
                         $warning = 1;

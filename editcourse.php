@@ -45,24 +45,26 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
+$PAGE->navbar->add('SA-Tool', new moodle_url('/local/satool'));
 
 // Set additional values.
 $returnurl = new moodle_url('/local/satool');
 $manageroptions = array(
     'maxfiles' => 5
 );
-
 $html = '';
 
 // Check for existing course.
 if ($id == -1) {
     $course = new stdClass();
     $course->id = -1;
+    $PAGE->navbar->add(get_string('newcourse', 'local_satool'));
 } else {
     $course = $DB->get_record('local_satool_courses', ['id' => $id]);
     if (!$course) {
         print_error('accessdenied', 'admin');
     }
+    $PAGE->navbar->add($course->name);
 }
 
 // Add teacher to course.
@@ -123,6 +125,7 @@ if ($courseform->is_cancelled()) {
 } else if ($coursenew = $courseform->get_data()) {
     $coursecreated = false;
     $coursenew->id = $id;
+    // Check if course is new and save accordingly if it is.
     if ($coursenew->id == -1) {
         unset($coursenew->id);
         $coursenewid = local_satool_create_course($coursenew);
@@ -149,6 +152,7 @@ if ($course->id != -1) {
     $formtext = html_writer::tag('p', get_string('createcoursetounlock', 'local_satool'));
 }
 
+// Prepare html.
 $html = '<br>' . html_writer::tag('form', $formtext,
     ['action' => new moodle_url($PAGE->url, ['sesskey' => sesskey()]), 'method' => 'post', 'class' => 'courseform']);
 

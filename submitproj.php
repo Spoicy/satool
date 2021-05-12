@@ -60,6 +60,9 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
+$PAGE->navbar->add('SA-Tool', new moodle_url('/local/satool'));
+$PAGE->navbar->add($projdef->name, new moodle_url('/local/satool/viewproj.php', ['id' => $id]));
+$PAGE->navbar->add(get_string('submit', 'local_satool'));
 
 // Set additional values.
 $returnurl = new moodle_url('/local/satool/viewproj.php', ['id' => $id]);
@@ -93,6 +96,7 @@ if ($projsubform->is_cancelled()) {
     redirect($returnurl);
 }
 
+// Output page.
 echo $OUTPUT->header();
 $projsubform->display();
 echo $OUTPUT->footer();

@@ -54,7 +54,6 @@ class local_satool_uploaddocs_form extends moodleform {
             '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
 
         // Accessibility: "Required" is bad legend text.
-        $strgeneral  = get_string('general');
         $strrequired = get_string('required');
 
         // Set up form.

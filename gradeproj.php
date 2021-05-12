@@ -48,6 +48,7 @@ $teacher = $DB->get_record('local_satool_teachers', ['userid' => $projdef->teach
 $course = $DB->get_record('local_satool_courses', ['id' => $teacher->courseid]);
 $rubric = json_decode($course->rubric);
 
+// Update project with grade if rubric is submitted.
 if ($submit) {
     $grade = [];
     foreach ($rubric as $key => $criteria) {
@@ -58,12 +59,15 @@ if ($submit) {
     redirect(new moodle_url('/local/satool/viewproj.php', ['id' => $id]));
 }
 
+// Setup html_table for the rubric.
 $table = new html_table();
 $table->attributes['class'] = 'generaltable projgradetable';
 $i = 0;
+// Go through each criteria in the rubric.
 foreach ($rubric as $key => $criteria) {
     $row = array();
     $row[] = html_writer::tag('b', $criteria[0]);
+    // Check if criteria is in set of 4 or 2. These are preset as custom rubrics have yet to be implemented.
     if ($criteria[1] == 4) {
         $row[] = html_writer::start_tag('input', ['type' => 'radio', 'id' => 'ung' . $i,
                 'name' => $key, 'value' => 0, 'required' => '']) .
@@ -92,20 +96,23 @@ foreach ($rubric as $key => $criteria) {
         $cell->colspan = 2;
         $row[] = $cell;
     }
+    // Add row to table.
     $table->data[] = $row;
     $i++;
 }
 
+// Prepare buttons.
 $buttons = html_writer::tag('a', get_string('goback', 'local_satool'),
     ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $id]), 'class' => 'btn btn-secondary float-right ml-2']) .
     html_writer::tag('button', get_string('submitgrade', 'local_satool'),
         ['name' => 'submitgrade', 'id' => 'submitgrade', 'type' => 'submit',
         'class' => 'btn btn-primary float-right', 'value' => 1]);
 
-
-$form = html_writer::tag('form', html_writer::table($table) . '<br>' .  $buttons,
+// Create form with rubric table and buttons.
+$form = html_writer::tag('form', html_writer::table($table) . '<br>' . $buttons,
     ['method' => 'post', 'action' => '#', 'name' => 'gradeForm']);
 
+// Output page.
 echo $OUTPUT->header();
 echo $form;
 echo $OUTPUT->footer();

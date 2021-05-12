@@ -48,6 +48,7 @@ class local_satool_submitproj_form extends moodleform {
             throw new coding_exception('invalid custom data for submit_proj_form');
         }
 
+        // Get project and project submission if exists.
         $project = $this->_customdata['project'];
         if (isset($project->submission)) {
             $projsub = json_decode($project->submission);
@@ -56,7 +57,6 @@ class local_satool_submitproj_form extends moodleform {
         }
 
         // Accessibility: "Required" is bad legend text.
-        $strgeneral  = get_string('general');
         $strrequired = get_string('required');
 
         // Set up form.

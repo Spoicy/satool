@@ -33,6 +33,7 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
+$PAGE->navbar->add('SA-Tool');
 
 // Prepare html variables
 $html = '';
@@ -56,17 +57,21 @@ if ($teacher) {
     $projdefstudents = $DB->get_records_select('local_satool_students', 'courseid = ? AND projectid IS NOT NULL',
         [$course->id]);
     $projectids = array();
+    // Get all unique project ids.
     foreach ($projdefstudents as $projdefstudent) {
         if (!in_array($projdefstudent->projectid, $projectids)) {
             $projectids[] = $projdefstudent->projectid;
         }
     }
+    // Display each unique project as a card.
     foreach ($projectids as $id) {
         $project = $DB->get_record('local_satool_projects', ['id' => $id]);
         $projdef = json_decode($project->definition);
+        // Put card in different section of page if is definition or supervised project.
         if ($projdef->status != 1) {
             $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            // List 2nd student if exists.
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
                 $names = fullname($student1) . ', ' . fullname($student2);
@@ -88,16 +93,17 @@ if ($teacher) {
                     html_writer::tag('h4', $projdef->name) .
                     html_writer::tag('a', get_string('viewproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id,]),
-                            'class' => 'btn btn-primary mr-2']) .
+                            'class' => 'btn btn-primary mr-2 mb-1']) .
                     html_writer::tag('a', get_string('superviseproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id, 'supervise' => 1]),
-                        'class' => 'btn btn-secondary']) . $warning,
+                        'class' => 'btn btn-secondary mb-1']) . $warning,
                     'card-body'),
                 'card');
             $cards .= $card;
         } else if ($projdef->status == 1 && $projdef->teacher == $teacher->userid) {
             $showproj = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            // List 2nd student if exists.
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
                 $names = fullname($student1) . ', ' . fullname($student2);
@@ -110,15 +116,16 @@ if ($teacher) {
                     html_writer::tag('h4', $projdef->name) .
                     html_writer::tag('a', get_string('viewproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id,]),
-                            'class' => 'btn btn-primary mr-2']) .
+                            'class' => 'btn btn-primary mr-2 mb-1']) .
                     html_writer::tag('a', get_string('gradeproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $project->id]),
-                        'class' => 'btn btn-secondary']),
+                        'class' => 'btn btn-secondary mb-1']),
                     'card-body'),
                 'card');
             $supcards .= $card;
         }
     }
+    // Add cards to their respective variables.
     $projdefshtml = html_writer::div($cards, 'card-columns');
     $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else if (has_capability('local/satool:viewallprojects', $PAGE->context)) {
@@ -127,25 +134,30 @@ if ($teacher) {
     $projdefstudents = $DB->get_records_select('local_satool_students', 'courseid = ? AND projectid IS NOT NULL',
         [$course->id]);
     $projectids = array();
+    // Set main page buttons.
     $html .= html_writer::div(
         html_writer::tag('a', get_string('createnewcourse', 'local_satool'),
             ['href' => new moodle_url('/local/satool/editcourse.php', ['id' => -1]),
             'class' => 'btn btn-primary mb-3 mr-2 btn-lg']) .
         html_writer::tag('a', get_string('editcurrentcourse', 'local_satool'),
             ['href' => new moodle_url('/local/satool/editcourse.php', ['id' => $course->id]),
-            'class' => 'btn btn-primary mb-3 btn-lg']),
+            'class' => 'btn btn-primary mb-3 btn-lg']), 
         'd-flex justify-content-center');
+    // Get all unique project ids.
     foreach ($projdefstudents as $projdefstudent) {
         if (!in_array($projdefstudent->projectid, $projectids)) {
             $projectids[] = $projdefstudent->projectid;
         }
     }
+    // Display each unique project as a card.
     foreach ($projectids as $id) {
         $project = $DB->get_record('local_satool_projects', ['id' => $id]);
         $projdef = json_decode($project->definition);
+        // Put card in different section of page if is definition or supervised project.
         if ($projdef->status != 1) {
             $showdefs = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            // List 2nd student if exists.
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
                 $names = fullname($student1) . ', ' . fullname($student2);
@@ -165,6 +177,7 @@ if ($teacher) {
         } else if ($projdef->status == 1) {
             $showproj = 1;
             $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+            // List 2nd student if exists.
             if ($projdef->student2 != 0) {
                 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
                 $names = fullname($student1) . ', ' . fullname($student2);
@@ -183,12 +196,14 @@ if ($teacher) {
             $supcards .= $card;
         }
     }
+    // Add cards to their respective variables.
     $projdefshtml = html_writer::div($cards, 'card-columns');
     $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else if ($student) {
     $cards = '';
     $supcards = '';
     $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
+    // Set main page button if project definition does not exist
     if (!$project) {
         $html .= html_writer::div(
             html_writer::tag('a', get_string('createnewdef', 'local_satool'),
@@ -201,15 +216,18 @@ if ($teacher) {
     } else {
         $projdef = null;
     }
+    // Display card in different section depending on if project is supervised or not.
     if ($project && $projdef->status != 1) {
         $showdefs = 1;
         $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+        // List 2nd student if exists.
         if ($projdef->student2 != 0) {
             $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
             $names = fullname($student1) . ', ' . fullname($student2);
         } else {
             $names = fullname($student1);
         }
+        // Set warning for student if values are missing.
         foreach ($requireddefvals as $val) {
             if ($projdef->$val == '') {
                 $warning = '<br>' . html_writer::span(get_string('warningincompletedef', 'local_satool'),
@@ -225,16 +243,17 @@ if ($teacher) {
                 html_writer::tag('h4', $projdef->name) .
                 html_writer::tag('a', get_string('viewproject', 'local_satool'),
                     ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id]),
-                    'class' => 'btn btn-primary mr-2']) .
+                    'class' => 'btn btn-primary mr-2 mb-1']) .
                 html_writer::tag('a', get_string('editproject', 'local_satool'),
                     ['href' => new moodle_url('/local/satool/editdef.php', ['id' => $project->id]),
-                    'class' => 'btn btn-secondary']) . $warning,
+                    'class' => 'btn btn-secondary mb-1']) . $warning,
                 'card-body'),
             'card');
         $cards .= $card;
     } else if ($project && $projdef->status == 1) {
         $showproj = 1;
         $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+        // List 2nd student if exists.
         if ($projdef->student2 != 0) {
             $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
             $names = fullname($student1) . ', ' . fullname($student2);
@@ -247,11 +266,12 @@ if ($teacher) {
                 html_writer::tag('h4', $projdef->name) .
                 html_writer::tag('a', get_string('viewproject', 'local_satool'),
                     ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id]),
-                    'class' => 'btn btn-primary mr-2']),
+                    'class' => 'btn btn-primary mb-1']),
                 'card-body'),
             'card');
         $supcards .= $card;
     }
+    // Add cards to their respective variables.
     $projdefshtml = html_writer::div($cards, 'card-columns');
     $supprojhtml = html_writer::div($supcards, 'card-columns');
 } else {

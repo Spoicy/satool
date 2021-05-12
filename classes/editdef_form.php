@@ -50,6 +50,7 @@ class local_satool_editdef_form extends moodleform {
 
         $year = date('Y');
 
+        // Get project and project definition if exists.
         $project = $this->_customdata['project'];
         if (isset($project->definition)) {
             $projdef = json_decode($project->definition);
@@ -58,7 +59,6 @@ class local_satool_editdef_form extends moodleform {
         }
 
         // Accessibility: "Required" is bad legend text.
-        $strgeneral  = get_string('general');
         $strrequired = get_string('required');
 
         // Set option for student 1.
@@ -101,6 +101,8 @@ class local_satool_editdef_form extends moodleform {
 
         $mform->addElement('select', 'student2', get_string('projstudent2', 'local_satool'), $studentoptions);
         $mform->addHelpButton('student2', 'projstudent2', 'local_satool');
+
+        // Set default for 2nd student.
         if (isset($projdef->student2) && $projdef->student2 != 0) {
             $mform->setDefault('student2', $projdef->student2);
         } else {

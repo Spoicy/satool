@@ -39,7 +39,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
 
-// Get various database objects
+// Get various database objects.
 $teacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
 $student = $DB->get_record('local_satool_students', ['projectid' => $id, 'userid' => $USER->id]);
 $project = $DB->get_record('local_satool_projects', ['id' => $id]);
@@ -47,13 +47,17 @@ $projdef = json_decode($project->definition);
 $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
 $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
 $projdefteacher = $DB->get_record('user', ['id' => $projdef->teacher]);
+$PAGE->navbar->add('SA-Tool', new moodle_url('/local/satool'));
+$PAGE->navbar->add($projdef->name);
 
+// Check if user is allowed to view page.
 if (($student1->id != $USER->id && ($student2 && $student2->id != $USER->id) &&
         ($projdefteacher && $projdefteacher->id != $USER->id) &&
         !has_capability('local/satool:viewallprojects', $PAGE->context)) && !($teacher && $projdef->status != 1)) {
     print_error('accessdenied', 'admin');
 }
 
+// Ask for confirmation if teacher is sure they want to supervise the project.
 if (($supervise || $superviseconfirm) && $projdef->teacher == 0) {
     if ($teacher) {
         if ($superviseconfirm != md5($supervise)) {
@@ -111,7 +115,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         $teachertext = '';
     }
 
-    // Explode
+    // Explode array to simplify trimming of definition variables.
     $explodearray = [
         'tools' => 'projtools',
         'opsystems' => 'projopsystems',
@@ -119,6 +123,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         'musthaves' => 'projmusthaves',
         'nicetohaves' => 'projnicetohaves'
     ];
+    // Trim definition variables.
     foreach ($explodearray as $key => $explode) {
         $items = explode(',', $projdef->$key);
         $$explode = '';
@@ -194,7 +199,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         $teachertext = '';
     }
 
-    // Explode
+    // Explode array to simplify trimming of definition variables.
     $explodearray = [
         'tools' => 'projtools',
         'opsystems' => 'projopsystems',
@@ -202,6 +207,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         'musthaves' => 'projmusthaves',
         'nicetohaves' => 'projnicetohaves'
     ];
+    // Trim definition variables.
     foreach ($explodearray as $key => $explode) {
         $items = explode(', ', $projdef->$key);
         $$explode = '';
@@ -248,6 +254,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
     print_error('accessdenied', 'admin');
 }
 
+// Output page.
 echo $OUTPUT->header();
 echo $html;
 echo $OUTPUT->footer();

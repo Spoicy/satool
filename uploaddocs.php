@@ -63,6 +63,7 @@ $curteacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
 // If statement simplifier variables.
 $userassigned = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id;
 
+// Check if user is allowed to view page.
 if ($userassigned) {
     print_error('accessdenied', 'admin');
 }
@@ -73,8 +74,8 @@ if ($id == -1) {
     $document->id = -1;
     $document->type = $type;
     $document->projectid = $projectid;
-    $allprojdocss = $DB->get_records_select('local_satool_documents', 'fileid != 0 AND projectid = ?', [$projectid]);
-    $document->fileid = count($allprojdocss) + 1;
+    $allprojdocs = $DB->get_records_select('local_satool_documents', 'fileid != 0 AND projectid = ?', [$projectid]);
+    $document->fileid = count($allprojdocs) + 1;
 } else {
     $document = $DB->get_record('local_satool_documents', ['id' => $id]);
     if (!$document) {
@@ -95,6 +96,7 @@ if ($uploadform->is_cancelled()) {
 } else if ($uploadnew = $uploadform->get_data()) {
     $uploadcreated = false;
     $uploadnew->id = $id;
+    // Check if document is new and handle appropriately if it is or isn't.
     if ($uploadnew->id == -1) {
         $uploadnewid = local_satool_upload_doc($uploadnew, $student->courseid, $project->id);
         $uploadnew->id = $uploadnewid->id;
@@ -105,31 +107,17 @@ if ($uploadform->is_cancelled()) {
         }
         local_satool_update_doc($uploadnew, $student->courseid, $project->id);
     } else {
-        if ($curstudent) {
-            if ($projdef->student2) {
-                $by = json_encode([$projdef->student1, $projdef->student2]);
-            } else {
-                $by = json_encode([$curstudent->userid]);
-            }
-            $for = json_encode($projdef->teacher);
-        } else {
-            $by = json_encode($curteacher->userid);
-            if ($projdef->student2) {
-                $from = json_encode([$projdef->student1, $projdef->student2]);
-            } else {
-                $from = json_encode([$curstudent->userid]);
-            }
-        }
         if (isset($uploadnew->projfiles_filemanager)) {
             $uploadsave = file_save_draft_area_files($uploadnew->projfiles_filemanager, $PAGE->context->id,
                 'local_satool', 'document', $student->courseid * 1000000 + $projectid * 100 + $uploadnew->fileid + 10,
                 $manageroptions);
         }
-        local_satool_update_doc($uploadnew, $student->courseid, $project->id, $by, $for);
+        local_satool_update_doc($uploadnew, $student->courseid, $project->id);
     }
     redirect($returnurl);
 }
 
+// Output page.
 echo $OUTPUT->header();
 echo $uploadform->display();
 echo $OUTPUT->footer();

@@ -34,10 +34,13 @@ require_login();
 // Get params.
 $id = optional_param('id', -1, PARAM_INT);
 
+// Get database objects.
 $course = array_reverse($DB->get_records('local_satool_courses'))[0];
 $student1 = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $USER->id]);
 $student2 = $DB->get_record_select('local_satool_students', 'courseid = ? AND projectid = ? AND userid != ?',
     [$course->id, $id, $USER->id]);
+
+// Check if user is allowed to view page.
 if (!$student1 && !$student2) {
     print_error('accessdenied', 'admin');
 }
@@ -84,7 +87,7 @@ $projectform = new local_satool_editdef_form(new moodle_url($PAGE->url), array('
 if ($projectform->is_cancelled()) {
     redirect($returnurl);
 } else if ($projdefnew = $projectform->get_data()) {
-    $projectcreated = false;
+    // Check if project is new and save accordingly if it is.
     if ($id == -1) {
         unset($projdefnew->id);
         unset($projdefnew->submitbutton);
@@ -110,6 +113,7 @@ if ($projectform->is_cancelled()) {
     redirect($returnurl);
 }
 
+// Output page.
 echo $OUTPUT->header();
 $projectform->display();
 echo $OUTPUT->footer();

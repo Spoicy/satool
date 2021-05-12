@@ -127,5 +127,9 @@ $string['projsubfiles'] = '.zip File';
 // Project grade translations.
 $string['submitgrade'] = 'Submit grade';
 
+// Navbar translations.
+$string['newcourse'] = 'New course';
+$string['submit'] = 'Submit project';
+
 // General translations.
 $string['goback'] = 'Go back';

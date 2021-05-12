@@ -42,11 +42,15 @@ class deadline_task extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB, $SITE;
+
+        // Get database objects.
         $course = array_reverse($DB->get_records('local_satool_courses'))[0];
         $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
+        // Cycle through each student.
         foreach ($students as $student) {
             $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
-            if ($project && $project->submission == null) {
+            // Check if project submission exists and send an email if it doesn't.
+            if ($project && !$project->submission) {
                 $user = $DB->get_record('user', ['id' => $student->userid]);
                 $dt = new DateTime();
                 $dt->setTimestamp($course->submitdate);

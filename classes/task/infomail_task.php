@@ -40,9 +40,12 @@ class infomail_task extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB, $SITE;
+
+        // Get database objects.
         $course = array_reverse($DB->get_records('local_satool_courses'))[0];
         $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
         $i = 5;
+        // Cycle through each student and send each one the info mail.
         foreach ($students as $student) {
             $user = $DB->get_record('user', ['id' => $student->userid]);
             email_to_user($user, $SITE->shortname, "Info-Mail $course->name", $course->mailtext);
