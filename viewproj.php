@@ -42,7 +42,8 @@ $project = $DB->get_record('local_satool_projects', ['id' => $id]);
 $student = $DB->get_record('local_satool_students', ['userid' => $USER->id, 'projectid' => $id]);
 $teacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
 $projdef = json_decode($project->definition);
-$courseidstud = $DB->get_record('local_satool_students', ['userid' => $projdef->student1]);
+$courseidstuds = $DB->get_records('local_satool_students', ['projectid' => $id]);
+$courseidstud = array_shift($courseidstuds);
 $course = $DB->get_record('local_satool_courses', ['id' => $courseidstud->courseid]);
 $documents = $DB->get_records_select('local_satool_documents', 'status = 1 AND projectid = ?', [$id]);
 

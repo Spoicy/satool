@@ -90,6 +90,9 @@ $string['viewproject'] = 'View';
 $string['superviseproject'] = 'Supervise';
 $string['editproject'] = 'Bearbeiten';
 $string['gradeproject'] = 'Grade';
+$string['createnewcourse'] = 'Create a new course';
+$string['editcurrentcourse'] = 'Edit current course';
+$string['createnewdef'] = 'Create project definition';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Supervise the project \'{$a}\'?';

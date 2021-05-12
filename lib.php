@@ -141,7 +141,8 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
     $projectid = (($args[0] % 1000000) - ($args[0] % 100)) / 100;
     $project = $DB->get_record('local_satool_projects', ['id' => $projectid]);
     $projdef = json_decode($project->definition);
-    $usernotinproject = $projdef->teacher != $USER->id && $projdef->student1 != $USER->id && $projdef->student2 != $USER->id;
+    $usernotinproject = $projdef->teacher != $USER->id && $projdef->status != 0 && $projdef->student1 != $USER->id &&
+        $projdef->student2 != $USER->id;
     if (!has_capability('local/satool:viewallprojects', context_system::instance()) && $usernotinproject) {
         send_file_not_found();
     }
@@ -546,7 +547,7 @@ function local_satool_create_projdef($projdef, $courseid) {
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
-    $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1]);
+    $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1, 'courseid' => $courseid]);
     if ($stud1) {
         $stud1->projectid = $project->id;
         $DB->update_record('local_satool_students', $stud1);
@@ -582,12 +583,13 @@ function local_satool_update_projdef($projdef, $courseid, $project) {
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
-    $oldstud2 = $DB->get_record('local_satool_students', ['projectid' => $project->id]);
+    $oldstud2 = $DB->get_record_select('local_satool_students', 'projectid = ? AND userid != ?',
+        [$project->id, $projdef->student1]);
     if ($oldstud2) {
         $oldstud2->projectid = null;
         $DB->update_record('local_satool_students', $oldstud2);
     }
-    $stud2 = $DB->get_record('local_satool_students', ['userid' => $projdef->student2]);
+    $stud2 = $DB->get_record('local_satool_students', ['userid' => $projdef->student2, 'courseid' => $courseid]);
     if ($stud2) {
         $stud2->projectid = $project->id;
         $DB->update_record('local_satool_students', $stud2);

@@ -161,7 +161,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
             ['href' => new moodle_url('/local/satool'), 'class' => 'btn btn-secondary float-right']);
 } else if (has_capability('local/satool:viewallprojects', $PAGE->context) || $student) {
     // Get course and calculate the item id for the sketch image.
-    $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1]);
+    $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1, 'projectid' => $project->id]);
     $course = $DB->get_record('local_satool_courses', ['id' => $stud1->courseid]);
     $sketchid = $course->id * 1000000 + $project->id * 100;
 

@@ -82,14 +82,17 @@ $string['projteacher'] = 'Betreuende Person';
 $string['sketchalt'] = 'Projectskizze / Layout';
 
 // Main page translations.
-$string['projectdefinitions'] = 'Projectdefinitionen';
-$string['projectdefinition'] = 'Projectdefinition';
+$string['projectdefinitions'] = 'Projektdefinitionen';
+$string['projectdefinition'] = 'Projektdefinition';
 $string['supervisedprojects'] = 'Betreute Projekte';
 $string['supervisedproject'] = 'Projekt';
 $string['viewproject'] = 'Anschauen';
 $string['superviseproject'] = 'Betreuen';
 $string['editproject'] = 'Bearbeiten';
 $string['gradeproject'] = 'Bewerten';
+$string['createnewcourse'] = 'Neuer Kurs erstellen';
+$string['editcurrentcourse'] = 'Existierender Kurs bearbeiten';
+$string['createnewdef'] = 'Projektdefinition erstellen';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Das Projekt \'{$a}\' betreuen?';

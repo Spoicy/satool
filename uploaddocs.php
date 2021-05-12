@@ -57,7 +57,7 @@ $project = $DB->get_record('local_satool_projects', ['id' => $projectid]);
 $projdef = json_decode($project->definition);
 $students = $DB->get_records('local_satool_students', ['projectid' => $projectid]);
 $student = array_shift($students);
-$curstudent = $DB->get_record('local_satool_students', ['userid' => $USER->id]);
+$curstudent = $DB->get_record('local_satool_students', ['userid' => $USER->id, 'courseid' => $student->courseid]);
 $curteacher = $DB->get_record('local_satool_teachers', ['userid' => $USER->id]);
 
 // Check for existing document.
