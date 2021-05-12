@@ -35,7 +35,7 @@ $PAGE->set_title(get_string('title', 'local_satool'));
 $PAGE->set_heading(get_string('title', 'local_satool'));
 $PAGE->navbar->add('SA-Tool');
 
-// Prepare html variables
+// Prepare html variables.
 $html = '';
 $supprojectshtml = '';
 
@@ -92,7 +92,7 @@ if ($teacher) {
                 html_writer::div(
                     html_writer::tag('h4', $projdef->name) .
                     html_writer::tag('a', get_string('viewproject', 'local_satool'),
-                        ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id,]),
+                        ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id]),
                             'class' => 'btn btn-primary mr-2 mb-1']) .
                     html_writer::tag('a', get_string('superviseproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/viewdef.php', ['id' => $project->id, 'supervise' => 1]),
@@ -115,7 +115,7 @@ if ($teacher) {
                 html_writer::div(
                     html_writer::tag('h4', $projdef->name) .
                     html_writer::tag('a', get_string('viewproject', 'local_satool'),
-                        ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id,]),
+                        ['href' => new moodle_url('/local/satool/viewproj.php', ['id' => $project->id]),
                             'class' => 'btn btn-primary mr-2 mb-1']) .
                     html_writer::tag('a', get_string('gradeproject', 'local_satool'),
                         ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $project->id]),
@@ -141,7 +141,7 @@ if ($teacher) {
             'class' => 'btn btn-primary mb-3 mr-2 btn-lg']) .
         html_writer::tag('a', get_string('editcurrentcourse', 'local_satool'),
             ['href' => new moodle_url('/local/satool/editcourse.php', ['id' => $course->id]),
-            'class' => 'btn btn-primary mb-3 btn-lg']), 
+            'class' => 'btn btn-primary mb-3 btn-lg']),
         'd-flex justify-content-center');
     // Get all unique project ids.
     foreach ($projdefstudents as $projdefstudent) {
@@ -203,7 +203,7 @@ if ($teacher) {
     $cards = '';
     $supcards = '';
     $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
-    // Set main page button if project definition does not exist
+    // Set main page button if project definition does not exist.
     if (!$project) {
         $html .= html_writer::div(
             html_writer::tag('a', get_string('createnewdef', 'local_satool'),

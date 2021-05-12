@@ -48,8 +48,10 @@ class local_satool_uploaddocs_form extends moodleform {
             throw new coding_exception('invalid custom data for docs_upload_form');
         }
 
+        // Fetch document if exists.
         $document = $this->_customdata['document'];
-        
+
+        // Setup accepted files types.
         $filetypes = array('.pdf', '.docx', '.xlsx', '.png', '.jpg', '.csv', '.svg', '.txt', '.zip', '.rar',
             '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
 
@@ -72,6 +74,7 @@ class local_satool_uploaddocs_form extends moodleform {
             'wrap="virtual" rows="5" cols="45"');
         $mform->setType('note', PARAM_TEXT);
 
+        // Display filemanager or link, depending on the document type.
         if ($document->type) {
             $mform->addElement('filemanager', 'projfiles_filemanager', get_string('projfiles', 'local_satool'), null, [
                 'maxfiles' => 1,

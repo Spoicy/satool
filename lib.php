@@ -43,7 +43,7 @@ function local_satool_create_course($course) {
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
         '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
         '\local_satool\task\deadline_task' => $course->deadline - 604800];
-    
+
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
         $datetime = explode(' ', $dt->format('j n Y G i'));
@@ -89,7 +89,7 @@ function local_satool_update_course($course) {
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
         '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
         '\local_satool\task\deadline_task' => $course->deadline - 604800];
-    
+
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
         $datetime = explode(' ', $dt->format('j n Y G i'));
@@ -138,6 +138,7 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
     $filename = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
 
+    // Get project id and check if user is allowed to view/download the file.
     $projectid = (($args[0] % 1000000) - ($args[0] % 100)) / 100;
     $project = $DB->get_record('local_satool_projects', ['id' => $projectid]);
     $projdef = json_decode($project->definition);
@@ -516,9 +517,9 @@ function local_satool_load_coursestudentform($course) {
 }
 
 /**
- * Insert a new project definition into the database
+ * Insert a new project definition into the database.
  *
- * @param stdClass $course
+ * @param stdClass $projdef
  * @param int $courseid
  */
 function local_satool_create_projdef($projdef, $courseid) {
@@ -558,8 +559,9 @@ function local_satool_create_projdef($projdef, $courseid) {
 /**
  * Update an existing project definition
  *
- * @param stdClass $project
+ * @param stdClass $projdef
  * @param int $courseid
+ * @param stdClass $project
  */
 function local_satool_update_projdef($projdef, $courseid, $project) {
     global $DB, $CFG;
@@ -597,10 +599,11 @@ function local_satool_update_projdef($projdef, $courseid, $project) {
 }
 
 /**
- * Insert a new project definition into the database
+ * Insert a new project document into the database
  *
- * @param stdClass $course
+ * @param stdClass $document
  * @param int $courseid
+ * @param int $projectid
  */
 function local_satool_upload_doc($document, $courseid, $projectid) {
     global $DB, $CFG;
@@ -628,9 +631,9 @@ function local_satool_upload_doc($document, $courseid, $projectid) {
     $document->note = trim($document->note);
     $documentid = $DB->insert_record('local_satool_documents', $document);
     $document->id = $documentid;
-    
+
     $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
-    
+
     if ($document->type) {
         $document = file_postupdate_standard_filemanager($document, 'projfiles', $manageroptions, $context,
             'local_satool', 'document', $docfullid);
@@ -648,8 +651,9 @@ function local_satool_upload_doc($document, $courseid, $projectid) {
 /**
  * Update an existing document
  *
- * @param stdClass $project
+ * @param stdClass $document
  * @param int $courseid
+ * @param int $projectid
  */
 function local_satool_update_doc($document, $courseid, $projectid) {
     global $DB, $CFG;

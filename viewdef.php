@@ -156,7 +156,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
         $infos .= html_writer::div(
             html_writer::div(html_writer::span(get_string($key, 'local_satool') . ':',
                 'font-weight-bold text-break'), 'col-md-4') .
-            html_writer::div(html_writer::span($info, 'text-break'), 'col-md-8'), 
+            html_writer::div(html_writer::span($info, 'text-break'), 'col-md-8'),
             'row mb-2');
     }
 
@@ -240,7 +240,7 @@ if ($teacher && ($projdef->teacher == $teacher->userid || $projdef->status == 0)
     foreach ($infosarray as $key => $info) {
         $infos .= html_writer::div(
             html_writer::div(html_writer::span(get_string($key, 'local_satool') . ':', 'font-weight-bold'), 'col-md-4') .
-            html_writer::div(html_writer::span($info), 'col-md-8'), 
+            html_writer::div(html_writer::span($info), 'col-md-8'),
             'row mb-2');
     }
 

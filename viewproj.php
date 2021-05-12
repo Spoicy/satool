@@ -60,7 +60,7 @@ if (!$project || $projdef->status != 1 || $userassigned) {
     print_error('accessdenied', 'admin');
 }
 
-// Setup html output variable
+// Setup html output variable.
 $html = '';
 
 // Prepare buttons.
@@ -108,15 +108,15 @@ if ($project->grade) {
     $totalgrade = 0;
     $totalallgrade = 0;
     foreach ($projgrade as $key => $grade) {
-        $totalgrade += $grade * $rubric->$key[2];
-        $totalallgrade += ($rubric->$key[1] - 1) * $rubric->$key[2];
+        $totalgrade += $grade * $rubric->{$key}[2];
+        $totalallgrade += ($rubric->{$key}[1] - 1) * $rubric->{$key}[2];
     }
     $finalgrade = round(($totalgrade * 1.0) / ($totalallgrade * 1.0) * 5 + 1, 1);
     $gradestringvals = new stdClass();
     $gradestringvals->total = $totalgrade;
     $gradestringvals->totalall = $totalallgrade;
 
-    // Output all elements into misc html
+    // Output all elements into misc html.
     $mischtml .= html_writer::tag('h3', get_string('grade', 'local_satool'), ['class' => 'mt-4 mb-3']) .
         html_writer::tag('p', get_string('gradetotals', 'local_satool', $gradestringvals), ['class' => 'mb-1']) .
         html_writer::tag('p', get_string('gradevalue', 'local_satool') .
@@ -132,7 +132,7 @@ if ($project->grade) {
     $files = $fs->get_area_files(1, 'local_satool', 'document', $submitid);
     $file = array_pop($files);
 
-    // Output submission html and add github element if exists
+    // Output submission html and add github element if exists.
     $mischtml .= html_writer::tag('h3', get_string('submission', 'local_satool'), ['class' => 'mt-4']) .
         html_writer::tag('h5',
             html_writer::tag('a', get_string('projsubfiles', 'local_satool'),
@@ -155,7 +155,7 @@ $html .= html_writer::tag('h2', $projdef->name) .
 // Display documents if any exist.
 if (count($documents)) {
     $dochtml = '';
-    foreach($documents as $document) {
+    foreach ($documents as $document) {
         $doc = '';
         $doc .= html_writer::tag('a', $document->title, ['href' => $document->path,
             'class' => 'doc-title']);

@@ -26,6 +26,12 @@ namespace local_satool\task;
 
 use DateTime;
 
+/**
+ * Class deadline_task.
+ *
+ * @copyright 2021 Jeremy Funke
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class deadline_task extends \core\task\scheduled_task {
 
     /**

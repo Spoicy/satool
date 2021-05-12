@@ -55,7 +55,6 @@ if ($data->pagemode == 0) {
             foreach ($assigned as $teacher) {
                 $assignedselect .= html_writer::tag('option', $teacher->firstname . " " .
                     $teacher->lastname . " (" . $teacher->username . ")", ['value' => $teacher->id]);
-                
             }
             $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
                 ['label' => get_string('teacherassignedcountmatching', 'local_satool', $assignedstringvars)]);
@@ -101,7 +100,8 @@ if ($data->pagemode == 0) {
     }
     echo json_encode($output);
 } else {
-    $inselect = 'SELECT lss.userid FROM {local_satool_students} lss WHERE lss.courseid = ' . $data->courseid . ' AND lss.status = 1';
+    $inselect = 'SELECT lss.userid FROM {local_satool_students} lss WHERE lss.courseid = ' .
+        $data->courseid . ' AND lss.status = 1';
     $assignedsql = 'SELECT * FROM {user} u WHERE u.id IN (' . $inselect . ')';
     $unassignedsql = 'SELECT * FROM {user} u WHERE u.id NOT IN (' . $inselect . ')';
     // Display the select differently depending on if search is empty or not.
@@ -117,7 +117,6 @@ if ($data->pagemode == 0) {
             foreach ($assigned as $student) {
                 $assignedselect .= html_writer::tag('option', $student->firstname . " " .
                     $student->lastname . " (" . $student->username . ")", ['value' => $student->id]);
-                
             }
             $assignedoptgroup = html_writer::tag('optgroup', $assignedselect,
                 ['label' => get_string('studentassignedcountmatching', 'local_satool', $assignedstringvars)]);

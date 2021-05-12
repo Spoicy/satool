@@ -24,6 +24,12 @@
 
 namespace local_satool\task;
 
+/**
+ * Class infomail_task.
+ *
+ * @copyright 2021 Jeremy Funke
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class infomail_task extends \core\task\scheduled_task {
 
     /**

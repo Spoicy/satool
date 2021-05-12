@@ -26,6 +26,12 @@ namespace local_satool\task;
 
 use DateTime;
 
+/**
+ * Class submitdate_task.
+ *
+ * @copyright 2021 Jeremy Funke
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class submitdate_task extends \core\task\scheduled_task {
 
     /**
@@ -50,7 +56,7 @@ class submitdate_task extends \core\task\scheduled_task {
         $students = $DB->get_records('local_satool_students', ['courseid' => $course->id]);
         // Cycle through each student.
         foreach ($students as $student) {
-            // Get project, user and datetime
+            // Get project, user and datetime.
             $project = $DB->get_record('local_satool_projects', ['id' => $student->projectid]);
             $projdef = json_decode($project->definition);
             $user = $DB->get_record('user', ['id' => $student->userid]);
@@ -74,8 +80,6 @@ class submitdate_task extends \core\task\scheduled_task {
                         get_string('warningsubmitdateincomplete', 'local_satool', $datetime));
                 }
             }
-            
         }
     }
-
 }
