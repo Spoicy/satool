@@ -31,6 +31,7 @@ function local_satool_create_course($course) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup filemanager options.
     $manageroptions = array(
         'maxfiles' => 5
     );
@@ -40,10 +41,10 @@ function local_satool_create_course($course) {
         $course = (object) $course;
     }
 
+    // Set values for scheduled tasks.
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
         '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
         '\local_satool\task\deadline_task' => $course->deadline - 604800];
-
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
         $datetime = explode(' ', $dt->format('j n Y G i'));
@@ -57,11 +58,13 @@ function local_satool_create_course($course) {
     }
 
     $course->name = trim($course->name);
+    // Rubric is static and cannot be changed currently. For compatibility, it is set to the database object.
     $course->rubric = '{"allg":["Allgemeiner Eindruck",4,1],"doc":["Dokumentation",4,2],' .
         '"analyse":["Analyse",4,1],"des":["Design",4,1],"real":["Realisation",4,3],"test":["Tests",4,1],' .
         '"praes":["Pr\u00e4sentation",4,1],"git":["GitHub",2,2]}';
     $courseid = $DB->insert_record('local_satool_courses', $course);
     $course->id = $courseid;
+    // Save files and course.
     $course = file_postupdate_standard_filemanager($course, 'coursefiles', $manageroptions, $context,
         'local_satool', 'document', $course->id * 1000000);
     $DB->update_record('local_satool_courses', $course);
@@ -77,6 +80,7 @@ function local_satool_update_course($course) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup filemanager options.
     $manageroptions = array(
         'maxfiles' => 5
     );
@@ -86,10 +90,10 @@ function local_satool_update_course($course) {
         $course = (object) $course;
     }
 
+    // Set values for scheduled tasks.
     $dates = ['\local_satool\task\infomail_task' => $course->maildate,
         '\local_satool\task\submitdate_task' => $course->submitdate - 604800,
         '\local_satool\task\deadline_task' => $course->deadline - 604800];
-
     foreach ($dates as $key => $date) {
         $dt->setTimestamp($date);
         $datetime = explode(' ', $dt->format('j n Y G i'));
@@ -101,6 +105,7 @@ function local_satool_update_course($course) {
         \core\task\manager::configure_scheduled_task($task);
     }
 
+    // Save course files and course.
     $course->name = trim($course->name);
     $course = file_postupdate_standard_filemanager($course, 'coursefiles', $manageroptions, $context,
         'local_satool', 'document', $course->id * 1000000);
@@ -124,17 +129,19 @@ function local_satool_update_course($course) {
 function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $DB, $CFG, $USER;
 
+    // Check if in correct context.
     if ($context->contextlevel != CONTEXT_SYSTEM) {
         send_file_not_found();
     }
     require_login();
 
+    // Check if filearea is valid.
     if ($filearea !== 'document') {
         send_file_not_found();
     }
 
+    // Get file storage and name.
     $fs = get_file_storage();
-
     $filename = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
 
@@ -148,10 +155,12 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
         send_file_not_found();
     }
 
+    // Check if file exists.
     if (!$file = $fs->get_file($context->id, 'local_satool', 'document', $args[0], '/', $filename) or $file->is_directory()) {
         send_file_not_found();
     }
 
+    // Send file.
     \core\session\manager::write_close();
     send_stored_file($file, null, 0, $forcedownload, $options);
 }
@@ -190,6 +199,7 @@ function local_satool_load_courseteacherform($course) {
         ['label' => get_string('unassignedcount', 'local_satool', count($unassigned))]);
 
     // Create table cells for the selects and buttons.
+    // Prepare the assigned column with select and search bar.
     $assignedtd = html_writer::tag('td',
         html_writer::tag('p',
             html_writer::label(get_string('teacherassigned', 'local_satool'), 'teacherassignedselect', true,
@@ -212,6 +222,7 @@ function local_satool_load_courseteacherform($course) {
                 'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearTeacherAssigned()']),
         'form-inline classsearch my-1'), ['id' => 'assignedcell']
     );
+    // Prepare the buttons column.
     $buttonstd = html_writer::tag('td',
         html_writer::div(
             html_writer::tag('input', '', [
@@ -226,6 +237,7 @@ function local_satool_load_courseteacherform($course) {
                 ]), '', ['id' => 'removecontrols']
         ), ['id' => 'buttonscell']
     );
+    // Prepare the not assigned column with select and search bar.
     $notassignedtd = html_writer::tag('td',
         html_writer::tag('p',
             html_writer::label(get_string('unassigned', 'local_satool'), 'teacherunassignedselect', true,
@@ -370,6 +382,7 @@ function local_satool_load_coursestudentform($course) {
         ['label' => get_string('unassignedcount', 'local_satool', count($unassigned))]);
 
     // Create table cells for the selects and buttons.
+    // Prepare the assigned column with select and search bar.
     $assignedtd = html_writer::tag('td',
         html_writer::tag('p',
             html_writer::label(get_string('studentassigned', 'local_satool'), 'studentassignedselect', true,
@@ -392,6 +405,7 @@ function local_satool_load_coursestudentform($course) {
                 'class' => 'btn btn-secondary mx-1', 'onclick' => 'clearStudentAssigned()']),
         'form-inline classsearch my-1'), ['id' => 'assignedcell']
     );
+    // Prepare the buttons column.
     $buttonstd = html_writer::tag('td',
         html_writer::div(
             html_writer::tag('input', '', [
@@ -406,6 +420,7 @@ function local_satool_load_coursestudentform($course) {
                 ]), '', ['id' => 'removecontrols']
         ), ['id' => 'buttonscell']
     );
+    // Prepare the not assigned column with select and search bar.
     $notassignedtd = html_writer::tag('td',
         html_writer::tag('p',
             html_writer::label(get_string('unassigned', 'local_satool'), 'studentunassignedselect', true,
@@ -526,6 +541,7 @@ function local_satool_create_projdef($projdef, $courseid) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup filemanager options.
     $manageroptions = array(
         'maxfiles' => 1,
         'accepted_types' => array('.svg', '.jpg', '.png')
@@ -535,19 +551,23 @@ function local_satool_create_projdef($projdef, $courseid) {
         $projdef = (object) $projdef;
     }
 
+    // Trim all text field values.
     $trimmable = ['name', 'employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
     foreach ($trimmable as $trim) {
         $projdef->$trim = trim($projdef->$trim);
     }
 
+    // Create new project object and save to get project id.
     $project = new stdClass();
     $project->definition = null;
     $projectid = $DB->insert_record('local_satool_projects', $project);
     $project->id = $projectid;
+    // Save file to server and save definition to project object.
     $projdef = file_postupdate_standard_filemanager($projdef, 'projsketch', $manageroptions, $context,
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
+    // Set student1's projectid.
     $stud1 = $DB->get_record('local_satool_students', ['userid' => $projdef->student1, 'courseid' => $courseid]);
     if ($stud1) {
         $stud1->projectid = $project->id;
@@ -567,6 +587,7 @@ function local_satool_update_projdef($projdef, $courseid, $project) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup filemanager options.
     $manageroptions = array(
         'maxfiles' => 1,
         'accepted_types' => array('.svg', '.jpg', '.png')
@@ -576,15 +597,19 @@ function local_satool_update_projdef($projdef, $courseid, $project) {
         $projdef = (object) $projdef;
     }
 
+    // Trim all text field values.
     $trimmable = ['name', 'employer', 'description', 'tools', 'opsystems', 'langs', 'musthaves', 'nicetohaves'];
     foreach ($trimmable as $trim) {
         $projdef->$trim = trim($projdef->$trim);
     }
 
+    // Save file to server and save definition to project object.
     $projdef = file_postupdate_standard_filemanager($projdef, 'projsketch', $manageroptions, $context,
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100);
     $project->definition = json_encode($projdef);
     $DB->update_record('local_satool_projects', $project);
+
+    // Set student2's projectid if exists.
     $oldstud2 = $DB->get_record_select('local_satool_students', 'projectid = ? AND userid != ?',
         [$project->id, $projdef->student1]);
     if ($oldstud2) {
@@ -609,6 +634,8 @@ function local_satool_upload_doc($document, $courseid, $projectid) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+
+    // Setup options for the filemanager.
     $filetypes = array('.pdf', '.docx', '.xlsx', '.png', '.jpg', '.csv', '.svg', '.txt', '.zip', '.rar',
         '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
     $manageroptions = array(
@@ -620,20 +647,22 @@ function local_satool_upload_doc($document, $courseid, $projectid) {
         $document = (object) $document;
     }
 
+    // Set dynamic fileid if document is file.
     if ($document->type) {
         $projdocuments = $DB->get_records_select('local_satool_documents', 'fileid != 0 AND projectid = ?', [$projectid]);
         $document->fileid = count($projdocuments) + 1;
     } else {
         $document->fileid = 0;
     }
+    // Set the other document values.
     $document->status = 1;
     $document->title = trim($document->title);
     $document->note = trim($document->note);
     $documentid = $DB->insert_record('local_satool_documents', $document);
     $document->id = $documentid;
 
+    // Save file to server and set path in document database object if document is file.
     $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
-
     if ($document->type) {
         $document = file_postupdate_standard_filemanager($document, 'projfiles', $manageroptions, $context,
             'local_satool', 'document', $docfullid);
@@ -659,6 +688,7 @@ function local_satool_update_doc($document, $courseid, $projectid) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup options for the filemanager.
     $filetypes = array('.pdf', '.docx', '.xlsx', '.png', '.jpg', '.csv', '.svg', '.txt', '.zip', '.rar',
         '.7z', '.tar.gz', '.tar', '.xml', '.gif', '.json');
     $manageroptions = array(
@@ -670,10 +700,11 @@ function local_satool_update_doc($document, $courseid, $projectid) {
         $document = (object) $document;
     }
 
-    $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
-
+    // Set other necessary document values.
     $document->title = trim($document->title);
     $document->note = trim($document->note);
+    // Save file to server and set path in document object if document is file.
+    $docfullid = $courseid * 1000000 + $projectid * 100 + $document->fileid + 10;
     if ($document->type) {
         $document = file_postupdate_standard_filemanager($document, 'projfiles', $manageroptions, $context,
             'local_satool', 'document', $docfullid);
@@ -698,6 +729,7 @@ function local_satool_submit_projsub($projsub, $courseid, $project) {
     global $DB, $CFG;
 
     $context = context_system::instance();
+    // Setup filemanager options.
     $manageroptions = array(
         'maxfiles' => 1,
         'accepted_types' => array('.zip')
@@ -707,9 +739,11 @@ function local_satool_submit_projsub($projsub, $courseid, $project) {
         $projsub = (object) $projsub;
     }
 
+    // Set necessary values and save .zip file to server.
     $projsub->github = trim($projsub->github);
     $projsub = file_postupdate_standard_filemanager($projsub, 'projsubfiles', $manageroptions, $context,
         'local_satool', 'document', $courseid * 1000000 + $project->id * 100 + 1);
+    // Save submission to project object.
     $project->submission = json_encode($projsub);
     $DB->update_record('local_satool_projects', $project);
 }
