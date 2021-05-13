@@ -33,7 +33,7 @@ $supervise = optional_param('supervise', 0, PARAM_INT);
 $superviseconfirm = optional_param('superviseconfirm', '', PARAM_ALPHANUM);
 
 // Set Page variables.
-$PAGE->set_url(new moodle_url('/local/satool/viewdef.php'));
+$PAGE->set_url(new moodle_url('/local/satool/viewdef.php', ['id' => $id]));
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('standard');
 $PAGE->set_title(get_string('title', 'local_satool'));

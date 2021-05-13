@@ -72,7 +72,7 @@ $buttons = html_writer::tag('a', get_string('viewdefinition', 'local_satool'),
     html_writer::tag('a', get_string('uploadlinks', 'local_satool'),
     ['href' => new moodle_url('/local/satool/uploaddocs.php', ['id' => -1, 'projectid' => $id, 'type' => 0]),
     'class' => 'btn btn-secondary mr-2 mb-2']);
-if ($teacher) {
+if ($teacher && $project->submission) {
     $buttons .= html_writer::tag('a', get_string('gradeproject', 'local_satool'),
         ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2 mb-2']);
 } else if ($student && !$project->grade) {
