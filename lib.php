@@ -151,7 +151,8 @@ function local_satool_pluginfile($course, $cm, $context, $filearea, $args, $forc
     $projdef = json_decode($project->definition);
     $usernotinproject = $projdef->teacher != $USER->id && $projdef->status != 0 && $projdef->student1 != $USER->id &&
         $projdef->student2 != $USER->id;
-    if (!has_capability('local/satool:viewallprojects', context_system::instance()) && $usernotinproject) {
+    if (!has_capability('local/satool:viewallprojects', context_system::instance()) && $usernotinproject &&
+            $args[0] != $args[0] - ($args[0] % 1000000)) {
         send_file_not_found();
     }
 

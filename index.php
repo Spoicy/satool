@@ -278,6 +278,20 @@ if ($teacher) {
     print_error('accessdenied', 'admin');
 }
 
+// Get course files and display them.
+$fs = get_file_storage();
+$files = $fs->get_area_files(1, 'local_satool', 'document', $course->id * 1000000);
+array_shift($files);
+$filehtml = '';
+foreach ($files as $file) {
+    $filehtml = html_writer::tag('h5',
+        html_writer::tag('a', $file->get_filename(),
+            ['href' => '/pluginfile.php/1/local_satool/document/' . $course->id * 1000000 . '/' . $file->get_filename()])
+        );
+}
+$filehtml = html_writer::tag('h2', get_string('coursefilestitle', 'local_satool'), ['class' => 'mb-4']) . $filehtml;
+$html .= html_writer::div($filehtml, 'mb-4');
+
 // Setup html to output.
 if ($student) {
     if ($showdefs) {

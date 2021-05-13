@@ -94,6 +94,7 @@ $string['createnewcourse'] = 'Neuer Kurs erstellen';
 $string['editcurrentcourse'] = 'Existierender Kurs bearbeiten';
 $string['createnewdef'] = 'Projektdefinition erstellen';
 $string['warningincompletedef'] = 'Diese Projektdefinition ist unvollständig.';
+$string['coursefilestitle'] = 'Kursdateien';
 
 // Confirm translations.
 $string['confirmsupervise'] = 'Das Projekt \'{$a}\' betreuen?';
