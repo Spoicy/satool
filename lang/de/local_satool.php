@@ -27,6 +27,10 @@
 $string['pluginname'] = 'SA-Tool';
 $string['title'] = 'SA-Tool';
 
+// Capabilities translations.
+$string['satool:editcourse'] = 'SA-Kurse erstellen und verwalten';
+$string['satool:viewallprojects'] = 'Alle SA-Projekte anschauen';
+
 // Schedule task translations.
 $string['infomailtask'] = 'Info-Mail an SA-Kursschüler senden';
 $string['submitdatetask'] = 'Warn-Email an SA-Kursschüler für Projektdefinitionsabgabe senden';
