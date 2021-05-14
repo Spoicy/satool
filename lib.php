@@ -727,7 +727,7 @@ function local_satool_update_doc($document, $courseid, $projectid) {
  * @param stdClass $project
  */
 function local_satool_submit_projsub($projsub, $courseid, $project) {
-    global $DB, $CFG;
+    global $DB, $CFG, $SITE;
 
     $context = context_system::instance();
     // Setup filemanager options.
@@ -740,6 +740,18 @@ function local_satool_submit_projsub($projsub, $courseid, $project) {
         $projsub = (object) $projsub;
     }
 
+    // Prepare array with users to send notification mail to.
+    $tosend = [];
+    $projdef = json_decode($project->definition);
+    $student1 = $DB->get_record('user', ['id' => $projdef->student1]);
+    $tosend[] = $student1;
+    if ($projdef->student2) {
+        $student2 = $DB->get_record('user', ['id' => $projdef->student2]);
+        $tosend[] = $student2;
+    }
+    $teacher = $DB->get_record('user', ['id' => $projdef->teacher]);
+    $tosend[] = $teacher;
+
     // Set necessary values and save .zip file to server.
     $projsub->github = trim($projsub->github);
     $projsub = file_postupdate_standard_filemanager($projsub, 'projsubfiles', $manageroptions, $context,
@@ -747,4 +759,9 @@ function local_satool_submit_projsub($projsub, $courseid, $project) {
     // Save submission to project object.
     $project->submission = json_encode($projsub);
     $DB->update_record('local_satool_projects', $project);
+    // Send notification mail to teacher and student(s).
+    foreach ($tosend as $user) {
+        email_to_user($user, $SITE->shortname, "Bestätigung SA-Abgabe",
+            get_string('notifysubmissionmail', 'local_satool', $projdef->name));
+    }
 }

@@ -59,6 +59,7 @@ $string['unassignedcountmatching'] = 'Nicht eingeschriebene Benutzer mit \'{$a->
 $string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
 $string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
 $string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
+$string['notifysubmissionmail'] = 'Eine Abgabe für den Projekt "{$a}" wurde eingereicht.';
 
 // Project definition translations.
 $string['projstudent1'] = 'Lernende/r 1';
