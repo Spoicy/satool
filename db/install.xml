@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/satool/db" VERSION="20210511" COMMENT="XMLDB file for Moodle local/satool"
+<XMLDB PATH="local/satool/db" VERSION="20210514" COMMENT="XMLDB file for Moodle local/satool"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -38,6 +38,7 @@
         <FIELD NAME="definition" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The definition of the project. This is stored in JSON-Format."/>
         <FIELD NAME="submission" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The submission of the project. This is stored in JSON-Format."/>
         <FIELD NAME="grade" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The grade of the test with rubric data. This is stored in JSON-Format"/>
+        <FIELD NAME="milestones" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Milestones for the project in JSON-Format."/>
         <FIELD NAME="teacherid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The id of the supervising teacher."/>
       </FIELDS>
       <KEYS>

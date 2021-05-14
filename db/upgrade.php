@@ -233,4 +233,20 @@ function xmldb_local_satool_upgrade($oldversion) {
         // Satool savepoint reached.
         upgrade_plugin_savepoint(true, 2021051100, 'local', 'satool');
     }
+
+    if ($oldversion < 2021051400) {
+
+        // Define field milestones to be added to local_satool_projects.
+        $table = new xmldb_table('local_satool_projects');
+        $field = new xmldb_field('milestones', XMLDB_TYPE_TEXT, null, null, null, null, null, 'grade');
+
+        // Conditionally launch add field milestones.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Satool savepoint reached.
+        upgrade_plugin_savepoint(true, 2021051400, 'local', 'satool');
+    }
+
 }

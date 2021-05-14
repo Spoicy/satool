@@ -106,6 +106,8 @@ $string['viewdefinition'] = 'View project definition';
 $string['uploaddocuments'] = 'Upload documents';
 $string['uploadlinks'] = 'Upload links';
 $string['submitproject'] = 'Submit project';
+$string['setmilestones'] = 'Set milestones';
+$string['milestones'] = 'Milestones';
 $string['documents'] = 'Documents';
 $string['nodocumentsfound'] = 'No documents have been uploaded yet.';
 $string['statusgraded'] = 'Project status: Graded';
@@ -115,6 +117,14 @@ $string['submission'] = 'Project submission';
 $string['grade'] = 'Grade';
 $string['gradetotals'] = '{$a->total}/{$a->totalall} points';
 $string['gradevalue'] = 'Grade: ';
+
+// Milestones translations.
+$string['projmiletopic1'] = 'Topic of 1st milestone';
+$string['projmiletopic1date'] = 'Date of 1st milestone';
+$string['projmiletopic2'] = 'Topic of 2nd milestone';
+$string['projmiletopic2date'] = 'Date of 2nd milestone';
+$string['projmiletopic3'] = 'Topic of 3rd milestone';
+$string['projmiletopic3date'] = 'Date of 3rd milestone';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'File / Link title';
@@ -132,6 +142,7 @@ $string['submitgrade'] = 'Submit grade';
 // Navbar translations.
 $string['newcourse'] = 'New course';
 $string['submit'] = 'Submit project';
+$string['addmilestones'] = 'Add new milestones';
 
 // General translations.
 $string['goback'] = 'Go back';

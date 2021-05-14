@@ -25,4 +25,4 @@
 defined('MOODLE_INTERNAL') || die;
 
 $plugin->component = 'local_satool';
-$plugin->version = 2021051100;
+$plugin->version = 2021051400;

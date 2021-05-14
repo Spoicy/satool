@@ -106,6 +106,8 @@ $string['viewdefinition'] = 'Projektdefinition anschauen';
 $string['uploaddocuments'] = 'Dokumente hochladen';
 $string['uploadlinks'] = 'Links hochladen';
 $string['submitproject'] = 'Projekt einreichen';
+$string['setmilestones'] = 'Meilensteine setzen';
+$string['milestones'] = 'Meilensteine';
 $string['documents'] = 'Dokumente';
 $string['nodocumentsfound'] = 'Keine Dokumente gefunden.';
 $string['statusgraded'] = 'Projectstatus: Bewertet und Abgeschlossen';
@@ -115,6 +117,14 @@ $string['submission'] = 'Projectabgabe';
 $string['grade'] = 'Bewertung';
 $string['gradetotals'] = '{$a->total}/{$a->totalall} Punkte';
 $string['gradevalue'] = 'Note: ';
+
+// Milestones translations.
+$string['topic1'] = 'Thema 1. Meilenstein';
+$string['topic1date'] = 'Datum 1. Meilenstein';
+$string['topic2'] = 'Thema 2. Meilenstein';
+$string['topic2date'] = 'Datum 2. Meilenstein';
+$string['topic3'] = 'Thema 3. Meilenstein';
+$string['topic3date'] = 'Datum 3. Meilenstein';
 
 // Document uploading page translations.
 $string['projfilestitle'] = 'Datei-/Linktitel';
@@ -132,6 +142,7 @@ $string['submitgrade'] = 'Bewertung einreichen';
 // Navbar translations.
 $string['newcourse'] = 'Neuer Kurs';
 $string['submit'] = 'Projekt einreichen';
+$string['addmilestones'] = 'Neue Meilensteine setzen';
 
 // General translations.
 $string['goback'] = 'Zurück';

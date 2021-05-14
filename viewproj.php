@@ -72,6 +72,11 @@ $buttons = html_writer::tag('a', get_string('viewdefinition', 'local_satool'),
     html_writer::tag('a', get_string('uploadlinks', 'local_satool'),
     ['href' => new moodle_url('/local/satool/uploaddocs.php', ['id' => -1, 'projectid' => $id, 'type' => 0]),
     'class' => 'btn btn-secondary mr-2 mb-2']);
+if ($teacher) {
+    $buttons .= html_writer::tag('a', get_string('setmilestones', 'local_satool'),
+        ['href' => new moodle_url('/local/satool/addmilestones.php', ['id' => $id]),
+            'class' => 'btn btn-secondary mr-2 mb-2']);
+}
 if ($teacher && $project->submission) {
     $buttons .= html_writer::tag('a', get_string('gradeproject', 'local_satool'),
         ['href' => new moodle_url('/local/satool/gradeproj.php', ['id' => $id]), 'class' => 'btn btn-secondary mr-2 mb-2']);
@@ -167,6 +172,31 @@ if (count($documents)) {
     $html .= $dochtml;
 } else {
     $html .= html_writer::tag('p', get_string('nodocumentsfound', 'local_satool'));
+}
+
+// Display milestones if any exist.
+$milehtml = '';
+if (isset($project->milestones)) {
+    $dt = new DateTime();
+    $projmilestones = json_decode($project->milestones);
+    $milehtml .= html_writer::tag('h3', get_string('milestones', 'local_satool'), ['class' => 'mb-4']);
+    $dt->setTimestamp($projmilestones->topic1date);
+    $datetime = $dt->format('d.m.Y');
+    $milehtml .= html_writer::tag('h6', $projmilestones->topic1, ['class' => 'font-weight-bold']) .
+        html_writer::tag('p', $datetime, ['class' => 'mb-2']);
+    if ($projmilestones->topic2) {
+        $dt->setTimestamp($projmilestones->topic2date);
+        $datetime = $dt->format('d.m.Y');
+        $milehtml .= html_writer::tag('h6', $projmilestones->topic2, ['class' => 'font-weight-bold']) .
+            html_writer::tag('p', $datetime, ['class' => 'mb-2']);
+    }
+    if ($projmilestones->topic3) {
+        $dt->setTimestamp($projmilestones->topic3date);
+        $datetime = $dt->format('d.m.Y');
+        $milehtml .= html_writer::tag('h6', $projmilestones->topic3, ['class' => 'font-weight-bold']) .
+            html_writer::tag('p', $datetime, ['class' => 'mb-2']);
+    }
+    $html .= $milehtml;
 }
 
 // Output page.

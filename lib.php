@@ -765,3 +765,32 @@ function local_satool_submit_projsub($projsub, $courseid, $project) {
             get_string('notifysubmissionmail', 'local_satool', $projdef->name));
     }
 }
+
+/**
+ * Insert new project milestones into the database
+ *
+ * @param stdClass $projmilestones
+ * @param int $courseid
+ * @param stdClass $project
+ */
+function local_satool_add_milestones($projmilestones, $courseid, $project) {
+    global $DB, $CFG, $SITE;
+
+    $context = context_system::instance();
+
+    if (!is_object($projmilestones)) {
+        $projmilestones = (object) $projmilestones;
+    }
+
+    // Trim topic if exists.
+    $projmilestones->topic1 = trim($projmilestones->topic1);
+    if ($projmilestones->topic2) {
+        $projmilestones->topic2 = trim($projmilestones->topic2);
+    }
+    if ($projmilestones->topic3) {
+        $projmilestones->topic3 = trim($projmilestones->topic3);
+    }
+    // Save submission to project object.
+    $project->milestones = json_encode($projmilestones);
+    $DB->update_record('local_satool_projects', $project);
+}
