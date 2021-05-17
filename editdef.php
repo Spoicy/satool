@@ -36,18 +36,26 @@ $id = optional_param('id', -1, PARAM_INT);
 
 // Get database objects.
 $course = array_reverse($DB->get_records('local_satool_courses'))[0];
-$student1 = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $USER->id]);
-$student2 = $DB->get_record_select('local_satool_students', 'courseid = ? AND projectid = ? AND userid != ?',
-    [$course->id, $id, $USER->id]);
+// Check for existing project.
+if ($id == -1) {
+    $project = new stdClass();
+    $project->id = -1;
+    $project->status = 0;
+    $student1 = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $USER->id]);
+} else {
+    $project = $DB->get_record('local_satool_projects', ['id' => $id]);
+    $projdef = json_decode($project->definition);
+    $student1 = $DB->get_record('local_satool_students', ['courseid' => $course->id, 'userid' => $projdef->student1]);
+}
 
 // Check if user is allowed to view page.
-if (!$student1 && !$student2) {
+if (!$student1) {
     print_error('accessdenied', 'admin');
 }
 
 
 // Check if user is owner of the project.
-if ($id != -1 && $student1->projectid != $id) {
+if ($id != -1 && $student1->userid != $USER->id) {
     print_error('accessdenied', 'admin');
 }
 
@@ -66,7 +74,7 @@ $manageroptions = array(
 );
 $html = '';
 
-// Check for existing course.
+// Check for existing project.
 if ($id == -1) {
     $project = new stdClass();
     $project->id = -1;
@@ -76,7 +84,7 @@ if ($id == -1) {
     $projdef = json_decode($project->definition);
 }
 
-// Prepare Filemanager if course exists.
+// Prepare Filemanager if project exists.
 if ($project->id !== -1) {
     $projdef = file_prepare_standard_filemanager($projdef, 'projsketch', $manageroptions, $PAGE->context,
         'local_satool', 'document', $course->id * 1000000 + $project->id * 100);
@@ -98,7 +106,7 @@ if ($projectform->is_cancelled()) {
             array('maxbytes' => $CFG->maxbytes, 'maxfiles' => 1,
             'accepted_types' => array('.svg', '.jpg', '.png')
         ));
-        local_satool_update_projdef($projdefnew, $course->id, $project);
+        local_satool_update_projdef($projdefnew, $course->id, $projectnew);
     } else {
         $projectnew = $DB->get_record('local_satool_projects', ['id' => $projdefnew->id]);
         unset($projdefnew->id);

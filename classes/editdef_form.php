@@ -74,12 +74,17 @@ class local_satool_editdef_form extends moodleform {
         $students = $DB->get_records_select('local_satool_students', 'courseid = ? AND projectid IS NULL AND userid != ?',
             [$course->id, $curuserid]);
         $studentoptions = array();
-        $studentoptions[0] = 'None';
+        $studentoptions[0] = get_string('none', 'local_satool');
 
         // Set up select options for student 2.
-        foreach ($students as $student) {
-            $user = $DB->get_record('user', ['id' => $student->userid]);
-            $studentoptions[$student->userid] = fullname($user);
+        if ($projdef->student2) {
+            $user = $DB->get_record('user', ['id' => $projdef->student2]);
+            $studentoptions[$projdef->student2] = fullname($user);
+        } else {
+            foreach ($students as $student) {
+                $user = $DB->get_record('user', ['id' => $student->userid]);
+                $studentoptions[$student->userid] = fullname($user);
+            }
         }
 
         // Set hidden element values.

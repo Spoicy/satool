@@ -60,7 +60,7 @@ $string['studentassignedcountmatching'] = 'Assigned students matching \'{$a->sea
 $string['unassignedcountmatching'] = 'Unassigned users matching \'{$a->search}\' ({$a->count})';
 
 // Course mail translations. These will not be translated into english.
-$string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
+$string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenommen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
 $string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
 $string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
 $string['notifysubmissionmail'] = 'Eine Abgabe für den Projekt "{$a}" wurde eingereicht.';
@@ -85,6 +85,7 @@ $string['projnicetohaves'] = 'Nice to haves';
 $string['projnicetohaves_help'] = 'Separate each nice to have with a comma if listing multiple.';
 $string['projteacher'] = 'Supervisor';
 $string['sketchalt'] = 'Project sketch / layout';
+$string['none'] = 'None';
 
 // Main page translations.
 $string['projectdefinitions'] = 'Project definitions';

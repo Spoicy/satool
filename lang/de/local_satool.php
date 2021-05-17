@@ -60,10 +60,10 @@ $string['studentassignedcountmatching'] = 'Eingeschriebene Schüler/innen mit \'
 $string['unassignedcountmatching'] = 'Nicht eingeschriebene Benutzer mit \'{$a->search}\' ({$a->count})';
 
 // Course mail translations. These will not be translated into english.
-$string['warningsubmitdateincomplete'] = 'Ihrer Projektdefinition ist unvollständig und wurde bis jetzt von keine Lehrperson angenohmen. Bitte laden Sie die fehlende Daten bis Eingabetermin ({$a}) hoch.';
-$string['warningsubmitdatemissing'] = 'Ihrer Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis Eingabetermin ({$a}) hoch.';
-$string['warningdeadline'] = 'Die Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
-$string['notifysubmissionmail'] = 'Eine Abgabe für den Projekt "{$a}" wurde eingereicht.';
+$string['warningsubmitdateincomplete'] = 'Ihre Projektdefinition ist unvollständig und wurde bis jetzt von keiner Lehrperson angenohmen. Bitte laden Sie die fehlenden Daten bis zum Eingabetermin ({$a}) hoch.';
+$string['warningsubmitdatemissing'] = 'Ihre Projektdefinition wurde noch nicht hochgeladen. Bitte laden Sie die Projektdefinition bis zum Eingabetermin ({$a}) hoch.';
+$string['warningdeadline'] = 'Der Abgabetermin ist in einer Woche ({$a}), bitte reichen Sie bis denn Ihre SA ein.';
+$string['notifysubmissionmail'] = 'Eine Abgabe für das Projekt "{$a}" wurde eingereicht.';
 
 // Project definition translations.
 $string['projstudent1'] = 'Lernende/r 1';
@@ -78,13 +78,14 @@ $string['projtools_help'] = 'Trennen Sie jedes Tool mit einem Komma.';
 $string['projopsystems'] = 'Betriebssystem(e)';
 $string['projopsystems_help'] = 'Trennen Sie jedes Betriebssystem mit einem Komma, wenn Sie mehrere auflisten.';
 $string['projlangs'] = 'Programmiersprache(n)';
-$string['projlangs_help'] = 'Trennen Sie jeder Programmiersprache mit einem Komma, wenn Sie mehrere auflisten.';
+$string['projlangs_help'] = 'Trennen Sie jede Programmiersprache mit einem Komma, wenn Sie mehrere auflisten.';
 $string['projmusthaves'] = 'Must-haves';
 $string['projmusthaves_help'] = 'Trennen Sie jedes Must-have mit einem Komma.';
 $string['projnicetohaves'] = 'Nice-to-haves';
 $string['projnicetohaves_help'] = 'Trennen Sie jedes Nice-to-have mit einem Komma, wenn Sie mehrere auflisten.';
 $string['projteacher'] = 'Betreuende Person';
 $string['sketchalt'] = 'Projectskizze / Layout';
+$string['none'] = 'Keine';
 
 // Main page translations.
 $string['projectdefinitions'] = 'Projektdefinitionen';
@@ -114,7 +115,7 @@ $string['setmilestones'] = 'Meilensteine setzen';
 $string['milestones'] = 'Meilensteine';
 $string['documents'] = 'Dokumente';
 $string['nodocumentsfound'] = 'Keine Dokumente gefunden.';
-$string['statusgraded'] = 'Projectstatus: Bewertet und Abgeschlossen';
+$string['statusgraded'] = 'Projectstatus: Bewertet und abgeschlossen';
 $string['statussubmitted'] = 'Projectstatus: Eingereicht';
 $string['statusincomplete'] = 'Projectstatus: Nicht fertig';
 $string['submission'] = 'Projectabgabe';
